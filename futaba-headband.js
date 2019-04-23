@@ -1,10 +1,10 @@
 
-let w = 155;
-let l = 200;
+
+let w = 175;
+let l = 205;
 let h = 25;
 let t = 5;
 let resolution = 128;
-
 
 function cyl(w,h) {
     return CSG.cylinder({                      //using the CSG primitives
