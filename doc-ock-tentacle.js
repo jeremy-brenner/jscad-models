@@ -11,16 +11,23 @@ const fno = 16;
 function main() {
   return difference( 
       humps(),
-      translate([0,0.1,0], scale([0.97, 0.97,1 ], difference(
+      translate([0,0.2,0], scale([0.97, 0.97,1 ], difference(
           humps(), 
-          translate([10,-6,0],cube([3,5,40]))
+           translate([-17.5,-24,-20],cube([35,11,100])),
+           translate([-19,30,-20],cube([38,11,100]))
           ))
-      ));
+      ),
+      translate([-13.5,-16,42],cube([27,1.5,25])),
+      translate([-13.5,-16,-19],cube([27,1.5,25])),
+      translate([-13.5,31,42],cube([27,1.5,25])),
+      translate([-13.5,31,-19],cube([27,1.5,25]))
+    );
 }
 
 
 function humps() {
-     return union(
+     return scale([3.33,3.33,3.33],
+     union(
        hump(),
       translate([0,0,hw],hump()), 
       translate([0,0,hw*2],hump()),
@@ -29,6 +36,7 @@ function humps() {
       translate([0,-4,hw],rotate([90,0,0],torus({ ri: 2, ro: 2, fni: fni/2, fno })))
 
 
+      )
       );
 }
 
@@ -49,8 +57,6 @@ function hump() {
       ),
       translate([20,-3.75,-ro+1.5],rotate([0,90,180],bevel())),
       translate([-20,-3.75,ro-1.5],rotate([0,270,180],bevel()))
-
-   
       );
 }
 
