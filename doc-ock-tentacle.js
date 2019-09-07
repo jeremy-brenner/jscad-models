@@ -1,67 +1,82 @@
 
-const hw = 8;
-const ri = 8;
-const ro = 4;
+const hw = 80;
+const hh = 60;
+const ht = 30;
+const bb = 8;
+const thickness = 3;
+const sb = hw/5;
 
-const quality = 1;
+const sw = 1-thickness/hw;
+const sh = 1-thickness/hh;
+
+
+const quality = 2;
 
 const fn = 16 * quality;
 
 function main() {
-  return difference( 
-      humps(),
-      translate([0,0.2,0], scale([0.98, 0.98,1 ], difference(
-          humps(), 
-           translate([-17.5,-24,-20],cube([35,11,100])),
-           translate([-19,30,-20],cube([38,11,100]))
-          ))
-      ),
-      translate([-13.5,-16,42],cube([27,1.5,25])),
-      translate([-13.5,-16,-19],cube([27,1.5,25])),
-      translate([-13.5,31,42],cube([27,1.5,25])),
-      translate([-13.5,31,-19],cube([27,1.5,25]))
+    return union( 
+        difference(
+        center(true,humps()),
+        center(true,scale([1-thickness/hw, 1, 1-thickness/hh], humps()))
+    ),
+        translate([0,0,-hh/2],center(true, sucker()))
+//center(true,hump())
     );
 }
 
 
 function humps() {
-     return scale([3.33,3.33,3.33],
-     union(
+    return union(
+       translate([hw,0,0],rotate([0,0,180],hump(ht/2))),
        hump(),
-      translate([0,0,hw],hump()), 
-      translate([0,0,hw*2],hump()),
-      
-     translate([0,-4,hw],rotate([90,0,0],torus({ ri: 2, ro: 5, fni: fn/2, fno: fn }))),
-      translate([0,-4,hw],rotate([90,0,0],torus({ ri: 2, ro: 2, fni: fn/2, fno: fn })))
-
-
-      )
-      );
+       translate([0,ht,0],hump(ht/2))
+    );
 }
 
-function hump() {
-    return difference(
-               
-        union(
-        intersection(
-            translate([-15,-5.5,-hw/2],cube([30,20,hw])),
-            union(
-                torus({ ri, ro, fni: fn,fno: fn }),
-                translate([ro,0,0], rotate([90,0,0],cylinder({r: ri, h: 4, fn}))),
-                translate([-ro,0,0], rotate([90,0,0],cylinder({r: ri, h: 4, fn}))),
-                translate([ro,-4,0],rotate([90,0,0],torus({ ri:1.5 , ro: ri-1.5, fni: fn/2, fno: fn }))),
-                translate([-ro,-4,0],rotate([90,0,0],torus({ ri:1.5 , ro: ri-1.5, fni: fn/2, fno: fn })))
-            )
+function hump(o=0) {
+    return intersection(
+    humpBase(),
+    difference(
+        cube([hw, ht-o, hh]),
+        bevel(),
+        translate([hw,ht,0],rotate([0,0,180],bevel()))
         )
+   );
+}
+
+function sucker() {
+  return intersection(
+      translate([0,0,-sb/2],center([true,true,false],cube([sb*3,sb*3,sb/4]))),
+      union(
+          torus({ ri: sb/2, ro: sb, fni: fn / 2, fno: fn }),
+          torus({ ri: sb/2, ro: sb/3, fni: fn / 2, fno: fn })
+      ));
+
+}
+
+function humpBase() {
+    return translate([hw/2,ht/2,0],
+    difference(
+      union(
+        translate([0,0,hh-hw/2],rotate([90,0,0],sphere({r: hw/2, fn})))
+        ,cylinder({r:hw/2, h: hh-hw/2, fn})
       ),
-      translate([20,-3.75,-ro+1.5],rotate([0,90,180],bevel())),
-      translate([-20,-3.75,ro-1.5],rotate([0,270,180],bevel()))
-      );
+      difference(
+        cylinder({r:hw/2, h: bb/2, fn}),
+        union(
+          translate([0,0,bb/2],torus({ ri: bb/2, ro: hw/2-bb/2, fni: fn, fno: fn })),
+          cylinder({r:hw/2-bb/2, h: bb, fn})
+        )
+      )
+      )
+    )
 }
 
 function bevel() {
-    return difference(
-             cube([2,2,40]),
-         cylinder({r: 2, h: 40, fn: fn})
-         );
+    const d = 4;
+    return translate([0,bb/d,bb/d],rotate([90,180,90],difference(
+        cube([bb/d, bb/d, hw]),
+        cylinder({ r: bb/d, h: hw, fn: fn })
+    )));
 }
