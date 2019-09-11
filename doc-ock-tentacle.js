@@ -3,14 +3,13 @@ const hw = 80;
 const hh = 60;
 const ht = 30;
 const bb = 8;
-const thickness = 3;
+const thickness = 1;
 const sb = hw/5;
 
-const sw = 1-thickness/hw;
-const sh = 1-thickness/hh;
+const sw = 1-thickness*2/hw;
+const sh = 1-thickness*2/hh;
 
-
-const quality = 2;
+const quality = 1;
 
 const fn = 16 * quality;
 
@@ -18,13 +17,12 @@ function main() {
     return union( 
         difference(
         center(true,humps()),
-        center(true,scale([1-thickness/hw, 1, 1-thickness/hh], humps()))
+        center(true,scale([sw, 1, sh], humps()))
     ),
         translate([0,0,-hh/2],center(true, sucker()))
 //center(true,hump())
     );
 }
-
 
 function humps() {
     return union(
@@ -52,7 +50,6 @@ function sucker() {
           torus({ ri: sb/2, ro: sb, fni: fn / 2, fno: fn }),
           torus({ ri: sb/2, ro: sb/3, fni: fn / 2, fno: fn })
       ));
-
 }
 
 function humpBase() {
