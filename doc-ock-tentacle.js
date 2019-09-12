@@ -3,11 +3,8 @@ const hw = 80;
 const hh = 60;
 const ht = 30;
 const bb = 8;
-const thickness = 1;
+const t = 1;
 const sb = hw/5;
-
-const sw = 1-thickness*2/hw;
-const sh = 1-thickness*2/hh;
 
 const quality = 1;
 
@@ -15,12 +12,8 @@ const fn = 16 * quality;
 
 function main() {
     return union( 
-        difference(
-        center(true,humps()),
-        center(true,scale([sw, 1, sh], humps()))
-    ),
-        translate([0,0,-hh/2],center(true, sucker()))
-//center(true,hump())
+        center([true,true,false],hollowOut(humps(),t,0,t)),
+        center(true, sucker())
     );
 }
 
@@ -46,10 +39,14 @@ function hump(o=0) {
 function sucker() {
   return intersection(
       translate([0,0,-sb/2],center([true,true,false],cube([sb*3,sb*3,sb/4]))),
-      union(
+      hollowOut(     
+        union(
           torus({ ri: sb/2, ro: sb, fni: fn / 2, fno: fn }),
           torus({ ri: sb/2, ro: sb/3, fni: fn / 2, fno: fn })
-      ));
+        ),
+        t,t,t
+      )
+    );
 }
 
 function humpBase() {
@@ -76,4 +73,30 @@ function bevel() {
         cube([bb/d, bb/d, hw]),
         cylinder({ r: bb/d, h: hw, fn: fn })
     )));
+}
+
+function hollowOut(object, tx,ty,tz) {
+    
+    const b = object.getBounds();
+    
+    const xw = b[1].x - b[0].x;
+    const yw = b[1].y - b[0].y;
+    const zw = b[1].z - b[0].z;
+    
+    const sx = 1-tx*2/xw;
+    const sy = 1-ty*2/yw;
+    const sz = 1-tz*2/zw;
+    
+    const scaledObject = scale([sx, sy, sz], object);
+    
+    const sob = scaledObject.getBounds();
+    
+    const dx = b[1].x - sob[1].x - tx;
+    const dy = b[1].y - sob[1].y - ty;
+    const dz = b[1].z - sob[1].z - tz;
+    
+    return difference(
+        object,
+        translate([dx,dy,dz],scaledObject)
+    );
 }
