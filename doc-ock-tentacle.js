@@ -12,16 +12,21 @@ const fn = 16 * quality;
 
 function main() {
     return union( 
-        center([true,true,false],hollowOut(humps(),t,0,t)),
-        center(true, sucker())
+    
+      //  translate([0,ht,0],center([true,true,false],humpBase()))
+   translate([0,-ht*2,0], hollowOut(intersection(hump(), translate([10,0,0],cube([hw-20,ht,hh]))),1,0,1)),
+   translate([0,ht,0], difference(hump(), translate([10,0,0],cube([hw-10,ht,hh]))) ),
+   translate([0,ht,0], difference(hump(), translate([0,0,0],cube([hw-10,ht,hh]))) ),
+        hollowOut(humps(),t,0,t),
+        translate([hw/2,0,0],center(true, sucker()))
     );
 }
 
 function humps() {
     return union(
-       translate([hw,0,0],rotate([0,0,180],hump(ht/2))),
-       hump(),
-       translate([0,ht,0],hump(ht/2))
+       translate([hw,0,0],rotate([0,0,180],hump())),
+       hump()
+       //translate([0,ht,0],hump(ht/2))
     );
 }
 
@@ -50,7 +55,8 @@ function sucker() {
 }
 
 function humpBase() {
-    return translate([hw/2,ht/2,0],
+    return  translate([hw/2,ht/2,0],
+    intersection(
     difference(
       union(
         translate([0,0,hh-hw/2],rotate([90,0,0],sphere({r: hw/2, fn})))
@@ -63,7 +69,9 @@ function humpBase() {
           cylinder({r:hw/2-bb/2, h: bb, fn})
         )
       )
-      )
+      ),
+    translate([-hw/2,-hw/2,0],cube([hw,hw,hh]))
+    )
     )
 }
 
@@ -100,3 +108,4 @@ function hollowOut(object, tx,ty,tz) {
         translate([dx,dy,dz],scaledObject)
     );
 }
+
