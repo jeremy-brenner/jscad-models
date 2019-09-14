@@ -15,9 +15,9 @@ const fn = 16 * quality;
 const w = 10;
 function main() {
     return union( 
- difference(
+ union(
   translate([0,-ht*2,0], hollowOut(intersection(hump(), translate([10.5,2,0],cube([hw-21,ht-2,hh]))),1,0,1)),
-translate([0,-ht-ht/2,hh/2],rotate([0,90,0],cylinder({r: 5, h: 80})))
+translate([8,-ht-ht/2,hh/2],difference(rotate([0,90,0],cylinder({r: 4.5, h: 64})),translate([3,-5,-5],cube([58,10,10]))))
 
 ),
 flanges(),
@@ -40,7 +40,8 @@ translate([hw-10,0,0],flange(10))
 ),
    translate([0,ht*2-2,0],cube([hw,2,hh])),
                   linear_extrude({ height: hh }, polygon([ [0,0],[hw,0],[hw-10,ht],[10,ht] ])),
-      translate([8,ht+ht/2,hh/2],rotate([0,90,0],cylinder({r: 5, h: 66})))         
+                  translate([9,ht*1.5,hh/2-5],cube([62,ht/2,10])),
+      translate([7,ht+ht/2,hh/2],rotate([0,90,0],cylinder({r: 5, h: 66})))         
 
    );
 }
@@ -146,4 +147,5 @@ function hollowOut(object, tx,ty,tz) {
         translate([dx,dy,dz],scaledObject)
     );
 }
+
 
