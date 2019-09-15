@@ -11,10 +11,18 @@ const fn = 16 * quality;
 
 const w = 10;
 function main() {
-    return union( 
+    const start = Date.now();
+    const model = render();
+    const runTime = Date.now() - start;
+    console.log(runTime/1000);
+    return model;
+}
+
+function render() {
+       return union( 
  union(
-  translate([0,-ht*2,0], hollowOut(intersection(hump(), translate([10.5,2,0],cube([hw-21,ht-2,hh]))),1,0,1)),
-translate([8,-ht-ht/2,hh/2],difference(rotate([0,90,0],cylinder({r: 4.5, h: 64, fn})),translate([3,-5,-5],cube([58,10,10]))))
+  translate([0,-ht*2,0], hollowOut(intersection(hump(), translate([10.5,2,0],cube([hw-21,ht-2,hh]))),1,0,1))
+,translate([7.5,-ht-ht/2,hh/2],difference(rotate([0,90,0],cylinder({r: 4.5, h: 65, fn})),translate([3,-5,-5],cube([58,10,10]))))
 
 ),
 flanges(),
@@ -22,7 +30,8 @@ flanges(),
        difference(
            hollowOut(humps(),t,0,t),
            translate([6.5,-ht*1.5,t],cube([4,ht,4])),
-            translate([hw-10.5,-ht*1.5,t],cube([4,ht,4]))
+            translate([hw-10.5,-ht*1.5,t],cube([4,ht,4])),
+                    translate([10,ht-2,0],cube([hw-20,ht,hh]))
 ),
         translate([hw/2,-ht/2,0],center(true, sucker()))
     );
@@ -32,7 +41,7 @@ function flanges() {
    return difference(
 union(
     support(),
-translate([10,ht*3,0],rotate([0,0,180],flange(10))),
+translate([10,0,0],mirror([1,0,0],flange(10))),
 translate([hw-10,0,0],flange(10))
 ),
    translate([0,ht*2-2,-1],cube([hw,2,hh])),
@@ -48,10 +57,11 @@ function support() {
 }
 
 function flange(w) {
-    return translate([w/2,ht+ht/2,23],
+    const s = -2;
+    return translate([w/2+s/2,ht+ht/2,23],
         center(true,
             intersection(
-             translate([0,0,hh-hw/2],rotate([90,0,0],sphere({r: hw/2, fn}))),
+             translate([s,s,hh-hw/2],rotate([90,0,0],sphere({r: hw/2, fn}))),
                 translate([hw/2-w/2,0,hh/2],center(true,cube([w,ht,hh])))
             )
         )  
@@ -144,3 +154,4 @@ function hollowOut(object, tx,ty,tz) {
         translate([dx,dy,dz],scaledObject)
     );
 }
+
