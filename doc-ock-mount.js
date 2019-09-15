@@ -5,6 +5,8 @@ const inner_height = height-hole_d;
 const small_section_r = hole_r + 5;
 const large_section_r = small_section_r + 2;
 
+const bump_r = large_section_r+25;
+
 const quality = 4;
 
 const fn = 16 * quality;
@@ -19,7 +21,27 @@ function main() {
 }
 
 function render() {
-     return union(
+  return union(
+    mount(), 
+     hump()
+  //   base()
+
+      );
+}
+
+function mountHump() {
+    return union( mount(), hump() );
+}
+
+function base() {
+    const base_r = bump_r+2;
+    return union(
+        cylinder({r:base_r,h:5, fn})
+    );
+}
+
+function mount() {
+         return union(
           difference(
         union(
           cylinder({r:small_section_r, h:height, fn:16}),
@@ -30,7 +52,16 @@ function render() {
          ),
          flanges()
         );
- 
+}
+
+function hump() {
+          return difference(
+      intersection(
+          translate([0,0,-25],sphere({r:bump_r,fn})),
+          translate([-bump_r,-bump_r,0],cube([bump_r*2,bump_r*2,height/2-2]))
+          ),
+          cylinder({r:large_section_r+2, h:height/2, fn})
+          )
 }
 
 function hole() {
@@ -40,13 +71,6 @@ function hole() {
   ));
 }
 
-function connector() {
-return    union(
-    translate([0,-ht*2,0], hollowOut(intersection(hump(), translate([10.5,2,0],cube([hw-21,ht-2,hh]))),1,0,1))
-  ,translate([7.5,-ht-ht/2,hh/2],difference(rotate([0,90,0],cylinder({r: 4.5, h: 65, fn})),translate([3,-5,-5],cube([58,10,10]))))
-  
-  );
-}
 
 
 function flanges() {
@@ -57,10 +81,6 @@ translate([-31,-17,18],cube([62,10,12])),
 translate([-30,-40,0],cube([60,80,60])),
 translate([7,45,30],rotate([0,90,0],cylinder({r: 5, h: 66, fn})))         
    ));
-}
-
-function support() {
-    return difference( hump(), translate([10,0,0],cube([hw-20,ht,hh])));
 }
 
 
