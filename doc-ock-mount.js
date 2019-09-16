@@ -24,20 +24,13 @@ function render() {
   return union(
     mount(), 
      hump()
-  //   base()
+ 
 
       );
 }
 
 function mountHump() {
     return union( mount(), hump() );
-}
-
-function base() {
-    const base_r = bump_r+2;
-    return union(
-        cylinder({r:base_r,h:5, fn})
-    );
 }
 
 function mount() {
@@ -72,7 +65,6 @@ function hole() {
 }
 
 
-
 function flanges() {
    return translate([0,0,inner_height], difference(
   translate([-33,-36,0],cube([66,72,30])),
@@ -82,6 +74,5 @@ translate([-30,-40,0],cube([60,80,60])),
 translate([7,45,30],rotate([0,90,0],cylinder({r: 5, h: 66, fn})))         
    ));
 }
-
 
 
