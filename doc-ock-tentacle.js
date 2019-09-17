@@ -20,6 +20,7 @@ function main() {
 
 function render() {
        return union( 
+          
  union(
   translate([0,-ht*2,0], hollowOut(intersection(hump(), translate([10.5,2,0],cube([hw-21,ht-2,hh]))),1,0,1))
 ,translate([7.5,-ht-ht/2,hh/2],difference(rotate([0,90,0],cylinder({r: 4.5, h: 65, fn})),translate([3,-5,-5],cube([58,10,10]))))
@@ -37,10 +38,22 @@ flanges(),
     );
 }
 
+function flangeReinforcement() {
+    const rr = hw/2.5;
+    const rt = 7;
+    const rh = 16;
+     return rotate([-90,90,0],intersection(
+               translate([-rr/2-4,rr-rt,0],cube([rr+4,rt,rh])),
+               cylinder({r:rr, h: rh, fn})
+               ));
+}
+
 function flanges() {
    return difference(
 union(
     support(),
+             translate([35,27,17.2],   flangeReinforcement()),
+            translate([45,27,17.2], mirror([1,0,0],flangeReinforcement())),
 translate([10,0,0],mirror([1,0,0],flange(10))),
 translate([hw-10,0,0],flange(10))
 ),
