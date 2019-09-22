@@ -18,32 +18,40 @@ function main() {
 
 function render() {
     return union( 
-        [...Array(segments).keys()].map( (i) => segment(i))
+        [...Array(segments).keys()].map( (i) => positionedSegment(i))
     );
 }
 
-
-function segment(i) {
-  
-   let sa = i*segmentAngle*(100-i*3.5)/100;
-   let spos = multipliers(sa);
-   let sm = multipliers(sizeAngle*i).y;
-        const s = 20-i*sm*1.4;
-     const hr = 6-i*sm*0.4;
-     const cubeH = hr;
-return translate([curveRadius*spos.x,0,-curveRadius*spos.y], 
-    rotate([0,sa,0],
-     translate([-s+hr/2,0,0],intersection(
-             torus({ ri: hr, ro: s, fni: fn / 2, fno: fn }),
-             translate([s-(cubeH-hr),-s-hr,-hr],cube([cubeH,(s+hr)*2,hr*2]))
-             ))
-     )
+function positionedSegment(i) {
+    const sa = i*segmentAngle*(100-i*3.5)/100;
+    const {tx,tz} = {
+       tx:multipliers(sa).cos*curveRadius,
+       tz:multipliers(sa).sin*-curveRadius
+    };
+    const sm = multipliers(sizeAngle*i).sin;
+    const s = 20-i*sm*1.4;
+    const hr = 6-i*sm*0.4;
+    return translate([tx,0,tz], 
+        rotate([0,sa,0],
+            translate([-s+hr/2,0,0], segment(hr,s) )
+        )
     );
 }
+
+function segment(hr,s) {
+    const cubeH = hr*1.5;
+    return intersection(
+        torus({ ri: hr, ro: s, fni: fn / 2, fno: fn }),
+        translate([s-(cubeH-hr),-s-hr,-hr],
+            cube([cubeH,(s+hr)*2,hr*2])
+        )
+    );
+}
+
 
 function multipliers(angle) {
     const rad = angle * Math.PI/180;
-    const x = Math.cos(rad);
-    const y = Math.sin(rad);
-    return {x,y};
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+    return {cos,sin};
 }
