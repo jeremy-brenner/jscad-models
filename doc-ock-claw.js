@@ -8,9 +8,14 @@ const segmentAngle = 14;
 const sizeAngle = 8;
 const segments = 12;
 
-const clawXd = 40;
-const clawYd = 35;
+const clawXd = 50;
+const clawYd = 40;
+const sideYd = clawYd - 7.7;
 const clawA = 15;
+
+const plateW=45;
+const plateL=100;
+const plateH=4;
 
 function main() {
     const start = Date.now();
@@ -21,15 +26,49 @@ function main() {
 }
 
 function render() {
-    const cw=45;
-    const ch=80;
     return union(
-      translate([-cw/2,-ch/2,15],cube([cw,ch,4])),
-      translate([clawXd,clawYd,0],rotate([0,0,clawA],claw())),
+     translate([0,sideYd,-1.7],sideA()),
+     translate([0,-sideYd,-1.7],rotate([0,0,180],sideA())),
+     translate([-13.5,0,-1.7], sideB()),
+     translate([13.5,0,-1.7], rotate([0,0,180],sideB())),
+     translate([clawXd,clawYd,0],rotate([0,0,clawA],claw())),
       translate([clawXd,-clawYd,0],rotate([0,0,-clawA],claw())),
       translate([-clawXd,-clawYd,0],rotate([0,0,180+clawA],claw())),
       translate([-clawXd,clawYd,0],rotate([0,0,180-clawA],claw()))
     );
+}
+
+
+function sideA() {
+    return center([true,true,false],
+        difference(
+            intersection(
+                translate([-28.5,-160,17],cube([57,80,9])),
+                torus({ri:26, ro:118, fni:fn, fno:fn*2})
+            )
+        )
+    );
+}
+
+function sideB() {
+    return center([true,true,false],
+    difference(
+        intersection(
+            translate([6,-60,17],cube([60,120,9])),
+            torus({ri:26,ro:37.5, fni:fn, fno:fn*2})
+        ),
+       translate([-16,10,17],rotate([0,0,-clawA], cube([20,60,9]))),
+       translate([0,-70,17],rotate([0,0,clawA], cube([20,60,9])))
+
+        )
+    );
+}
+
+function disk({ri,ro,fni,fno}) {
+  return union(
+      torus({ ri, ro, fni, fno }),
+      translate([0,0,-ri],cylinder({r:ro,h:ri*2,fn:fno}))
+      );
 }
 
 function claw() {
@@ -60,8 +99,9 @@ function positionedSegment(i) {
 
 function segment(hr,s) {
     const cubeH = hr*1.5;
+    console.log({ ri: hr, ro: s, fni: fn / 2, fno: fn, cubeH });
     return intersection(
-        torus({ ri: hr, ro: s, fni: fn / 2, fno: fn }),
+        disk({ ri: hr, ro: s, fni: fn / 2, fno: fn }),
         translate([s-(cubeH-hr),-s-hr,-hr],
             cube([cubeH,(s+hr)*2,hr*2])
         )
