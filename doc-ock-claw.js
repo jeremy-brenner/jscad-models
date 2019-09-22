@@ -8,6 +8,10 @@ const segmentAngle = 14;
 const sizeAngle = 8;
 const segments = 12;
 
+const clawXd = 40;
+const clawYd = 35;
+const clawA = 15;
+
 function main() {
     const start = Date.now();
     const model = render();
@@ -17,8 +21,24 @@ function main() {
 }
 
 function render() {
-    return union( 
-        [...Array(segments).keys()].map( (i) => positionedSegment(i))
+    const cw=45;
+    const ch=80;
+    return union(
+      translate([-cw/2,-ch/2,15],cube([cw,ch,4])),
+      translate([clawXd,clawYd,0],rotate([0,0,clawA],claw())),
+      translate([clawXd,-clawYd,0],rotate([0,0,-clawA],claw())),
+      translate([-clawXd,-clawYd,0],rotate([0,0,180+clawA],claw())),
+      translate([-clawXd,clawYd,0],rotate([0,0,180-clawA],claw()))
+    );
+}
+
+function claw() {
+    return rotate([0,-90,0],
+        center(true,
+            union( 
+                [...Array(segments).keys()].map( (i) => positionedSegment(i))
+            )
+        )
     );
 }
 
@@ -47,7 +67,6 @@ function segment(hr,s) {
         )
     );
 }
-
 
 function multipliers(angle) {
     const rad = angle * Math.PI/180;
