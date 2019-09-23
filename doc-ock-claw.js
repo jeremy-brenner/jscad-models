@@ -1,5 +1,4 @@
 
-
 const quality = 1;
 
 const fn = 16 * quality;
@@ -27,9 +26,13 @@ const plateW=45;
 const plateL=100;
 const plateH=4;
 
+const connectorScale = 0.35;
+const printSize = 0.95;
+const scaleFactor=printSize/connectorScale;
+
 function main() {
     const start = Date.now();
-    const model = render();
+    const model = scale([scaleFactor,scaleFactor,scaleFactor],render());
     const runTime = Date.now() - start;
     console.log(runTime/1000);
     return model;
@@ -51,10 +54,10 @@ function render() {
 }
 
 function connector() {
-    return scale([0.35,0.35,0.35],
+    return scale([connectorScale,connectorScale,connectorScale],
         difference( 
             union(
-        translate([0,32.5,0],
+        translate([9,32.5,0],
             rotate([90,0,0],
                 cylinder({r: 4.5, h: 65, fn})
             )
