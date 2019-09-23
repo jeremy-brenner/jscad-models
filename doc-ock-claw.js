@@ -1,7 +1,17 @@
 
+
 const quality = 1;
 
 const fn = 16 * quality;
+
+const height = 20;
+const hole_r = 15;
+const hole_d = 40;
+const inner_height = height-hole_d;
+const small_section_r = hole_r + 1;
+const large_section_r = small_section_r + 1;
+
+const bump_r = large_section_r+25;
 
 const curveRadius = 35;
 const segmentAngle = 14;
@@ -27,17 +37,57 @@ function main() {
 
 function render() {
     return union(
-     translate([0,sideYd,-1.7],sideA()),
-     translate([0,-sideYd,-1.7],rotate([0,0,180],sideA())),
-     translate([-13.5,0,-1.7], sideB()),
-     translate([13.5,0,-1.7], rotate([0,0,180],sideB())),
-     translate([clawXd,clawYd,0],rotate([0,0,clawA],claw())),
-      translate([clawXd,-clawYd,0],rotate([0,0,-clawA],claw())),
-      translate([-clawXd,-clawYd,0],rotate([0,0,180+clawA],claw())),
-      translate([-clawXd,clawYd,0],rotate([0,0,180-clawA],claw()))
+        plate(),
+        claws(),
+    //     difference(
+    // translate([0,0,15],mount()),
+    //  cylinder({r:hole_r, h:hole_d, fn})
+    //  ),
+    intersection(
+       translate([0,0,25],connector()),
+       cylinder({r:hole_r, h:hole_d, fn})
+       )
     );
 }
 
+function connector() {
+    return scale([0.35,0.35,0.35],
+        difference( 
+            union(
+        translate([0,32.5,0],
+            rotate([90,0,0],
+                cylinder({r: 4.5, h: 65, fn})
+            )
+        ),
+        translate([-40,-29.5,-15],
+              cube([80,59,30])
+        )
+        ),
+         translate([-40,-26.5,-15],cube([80,53,30]))
+        )
+    );
+}
+
+function claws() {
+    return union(
+        translate([clawXd,clawYd,0],rotate([0,0,clawA],claw())),
+        translate([clawXd,-clawYd,0],rotate([0,0,-clawA],claw())),
+        translate([-clawXd,-clawYd,0],rotate([0,0,180+clawA],claw())),
+        translate([-clawXd,clawYd,0],rotate([0,0,180-clawA],claw()))
+    );
+}
+
+function plate() {
+    return difference( union(
+        translate([0,0,15],mount()),
+        translate([0,sideYd,-1.7],sideA()),
+        translate([0,-sideYd,-1.7],rotate([0,0,180],sideA())),
+        translate([-13.5,0,-1.7], sideB()),
+        translate([13.5,0,-1.7], rotate([0,0,180],sideB()))
+    ),
+    cylinder({r:hole_r, h:hole_d, fn})
+    );
+}
 
 function sideA() {
     return center([true,true,false],
@@ -114,3 +164,14 @@ function multipliers(angle) {
     const sin = Math.sin(rad);
     return {cos,sin};
 }
+
+
+function mount() {
+    return union(
+     cylinder({r:small_section_r, h:height, fn:16}),
+     translate([0,0,height/2],cylinder({r1: large_section_r, r2: small_section_r, h: 1, fn:16})),
+    cylinder({r:large_section_r, h:height/2, fn:16})
+     );
+}
+
+
