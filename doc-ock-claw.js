@@ -16,7 +16,7 @@ const segmentAngle = 14;
 const sizeAngle = 8;
 const segments = 12;
 
-const clawXd = 50;
+const clawXd = 52.5;
 const clawYd = 40;
 const sideYd = clawYd - 7.7;
 const clawA = 15;
@@ -25,13 +25,18 @@ const plateW=45;
 const plateL=100;
 const plateH=4;
 
-const connectorScale = 0.35;
+const connectorScale = 0.45;
 const printSize = 0.95;
-const scaleFactor=printSize/connectorScale;
+
+const scaleFactor=1/connectorScale;
+
+const mountScale = 0.35;
+const mountSf=1/mountScale
+
 
 function main() {
     const start = Date.now();
-    const model = scale([scaleFactor,scaleFactor,scaleFactor],render());
+    const model = scale([printSize,printSize,printSize],render());
     const runTime = Date.now() - start;
     console.log(runTime/1000);
     return model;
@@ -40,55 +45,40 @@ function main() {
 function render() {
     const items = [];
     items.push(plate());
-    items.push(claws());
+    items.push(claws(claw()));
     items.push(mount());
  
  /* for printing */
-    //items.push(halfPlate()); 
-    //items.push(claw()); 
+  //  items.push(halfPlate()); 
+  //  items.push(claw()); 
     
     return union(items);
 }
 
-function connector() {
-    return scale([connectorScale,connectorScale,connectorScale],
-        difference( 
-            union(
-        translate([9,32.5,0],
-            rotate([90,0,0],
-                cylinder({r: 4.5, h: 65, fn})
-            )
-        ),
-        translate([-40,-29.5,-15],
-              cube([80,59,30])
-        )
-        ),
-         translate([-40,-26.5,-15],cube([80,53,30]))
-        )
-    );
-}
-
-function claws() {
+function claws(renderedClaw) {
     return union(
-        translate([clawXd,clawYd,0],rotate([0,0,clawA],claw())),
-        translate([clawXd,-clawYd,0],rotate([0,0,-clawA],claw())),
-        translate([-clawXd,-clawYd,0],rotate([0,0,180+clawA],claw())),
-        translate([-clawXd,clawYd,0],rotate([0,0,180-clawA],claw()))
+        translate([clawXd*scaleFactor,clawYd*scaleFactor,0],rotate([0,0,clawA],renderedClaw)),
+        translate([clawXd*scaleFactor,-clawYd*scaleFactor,0],rotate([0,0,-clawA],renderedClaw)),
+        translate([-clawXd*scaleFactor,-clawYd*scaleFactor,0],rotate([0,0,180+clawA],renderedClaw)),
+        translate([-clawXd*scaleFactor,clawYd*scaleFactor,0],rotate([0,0,180-clawA],renderedClaw))
     );
 }
 
 function halfPlate() {
-    return intersection(plate(),translate([-50,0,0],cube([100,100,100])));
+    return intersection(plate(),translate([-500,0,0],cube([1000,1000,1000])));
 }
 
 function plate() {
-    return difference( union(
-        translate([0,sideYd,-1.7],sideA()),
-        translate([0,-sideYd,-1.7],rotate([0,0,180],sideA())),
-        translate([-13.5,0,-1.7], sideB()),
-        translate([13.5,0,-1.7], rotate([0,0,180],sideB()))
-    ),
-    cylinder({r:large_section_r, h:hole_d, fn})
+    return difference(
+        scale([scaleFactor,scaleFactor,scaleFactor], 
+            union(
+                translate([0,sideYd,-1.7],sideA()),
+                translate([0,-sideYd,-1.7],rotate([0,0,180],sideA())),
+                translate([-13.5,0,-1.7], sideB()),
+                translate([13.5,0,-1.7], rotate([0,0,180],sideB()))
+            )
+        ),
+        scale([mountSf,mountSf,mountSf],cylinder({r:large_section_r, h:hole_d, fn: 16}))
     );
 }
 
@@ -105,30 +95,36 @@ function sideA() {
 
 function sideB() {
     return center([true,true,false],
-    difference(
-        intersection(
-            translate([6,-60,17],cube([60,120,9])),
-            torus({ri:26,ro:37.5, fni:fn, fno:fn*2})
-        ),
-       translate([-16,10,17],rotate([0,0,-clawA], cube([20,60,9]))),
-       translate([0,-70,17],rotate([0,0,clawA], cube([20,60,9])))
-
+        difference(
+            intersection(
+                translate([6,-60,17],cube([60,120,9])),
+                torus({ri:26,ro:37.5, fni:fn, fno:fn*2})
+            ),
+            translate([-16,10,17],rotate([0,0,-clawA], cube([20,60,9]))),
+            translate([0,-70,17],rotate([0,0,clawA], cube([20,60,9])))
         )
     );
 }
 
 function disk({ri,ro,fni,fno}) {
-  return union(
-      torus({ ri, ro, fni, fno }),
-      translate([0,0,-ri],cylinder({r:ro,h:ri*2,fn:fno}))
-      );
+    return union(
+        torus({ ri, ro, fni, fno }),
+        translate([0,0,-ri],cylinder({r:ro,h:ri*2,fn:fno}))
+    );
 }
 
 function claw() {
-    return rotate([0,-90,0],
-        center(true,
-            union( 
-                [...Array(segments).keys()].map( (i) => positionedSegment(i))
+    return scale([scaleFactor,scaleFactor,scaleFactor],
+        rotate([0,-90,0],
+            center(true,
+                union( 
+                    [...Array(segments).keys()].map( (i) => {
+                        return i === 0 ? difference(
+                            positionedSegment(i),
+                            translate([30,-25,0.5],cube([15,50,15]))
+                        ) : positionedSegment(i);
+                    })
+                )
             )
         )
     );
@@ -152,7 +148,6 @@ function positionedSegment(i) {
 
 function segment(hr,s) {
     const cubeH = hr*1.5;
-    console.log({ ri: hr, ro: s, fni: fn / 2, fno: fn, cubeH });
     return intersection(
         disk({ ri: hr, ro: s, fni: fn / 2, fno: fn }),
         translate([s-(cubeH-hr),-s-hr,-hr],
@@ -170,20 +165,38 @@ function multipliers(angle) {
 
 
 function mount() {
-    return translate([0,0,15],
+
+    return translate([0,0,11.5*mountSf],
         union(
-            difference(
+            scale([mountSf,mountSf,mountSf],difference(
                 union(
                     cylinder({r:small_section_r, h:height, fn:16}),
                     translate([0,0,height/2],cylinder({r1: large_section_r, r2: small_section_r, h: 1, fn:16})),
                     cylinder({r:large_section_r, h:height/2, fn:16})
                 ),
                 cylinder({r:hole_r, h:hole_d, fn})
-            ),
+            )),
             intersection(
-                translate([0,0,10],connector()),
-                cylinder({r:hole_r, h:hole_d, fn})
+                translate([0,0,10*mountSf],connector()),
+                scale([mountSf,mountSf,mountSf],cylinder({r:hole_r, h:hole_d, fn}))
             )
         )
+    );
+}
+
+
+function connector() {
+    return difference( 
+        union(
+            translate([9,32.5,0],
+                rotate([90,0,0],
+                    cylinder({r: 4.5, h: 65, fn})
+                )
+            ),
+            translate([-40,-29.5,-15],
+                cube([80,59,30])
+            )
+        ),
+        translate([-40,-26.5,-15],cube([80,53,30]))
     );
 }
