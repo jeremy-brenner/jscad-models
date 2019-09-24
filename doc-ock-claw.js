@@ -39,18 +39,13 @@ function main() {
 }
 
 function render() {
-    return union(
-        plate(),
-        claws(),
-    //     difference(
-    // translate([0,0,15],mount()),
-    //  cylinder({r:hole_r, h:hole_d, fn})
-    //  ),
-    intersection(
-       translate([0,0,25],connector()),
-       cylinder({r:hole_r, h:hole_d, fn})
-       )
-    );
+    const items = [];
+    items.push(plate());
+    items.push(claws());
+    //items.push(claw()); // single claw
+    items.push(mount());
+    
+    return union(items);
 }
 
 function connector() {
@@ -82,13 +77,12 @@ function claws() {
 
 function plate() {
     return difference( union(
-        translate([0,0,15],mount()),
         translate([0,sideYd,-1.7],sideA()),
         translate([0,-sideYd,-1.7],rotate([0,0,180],sideA())),
         translate([-13.5,0,-1.7], sideB()),
         translate([13.5,0,-1.7], rotate([0,0,180],sideB()))
     ),
-    cylinder({r:hole_r, h:hole_d, fn})
+    cylinder({r:large_section_r, h:hole_d, fn})
     );
 }
 
@@ -168,13 +162,22 @@ function multipliers(angle) {
     return {cos,sin};
 }
 
-
 function mount() {
-    return union(
-     cylinder({r:small_section_r, h:height, fn:16}),
-     translate([0,0,height/2],cylinder({r1: large_section_r, r2: small_section_r, h: 1, fn:16})),
-    cylinder({r:large_section_r, h:height/2, fn:16})
-     );
+    return translate([0,0,15],
+        union(
+            difference(
+                union(
+                    cylinder({r:small_section_r, h:height, fn:16}),
+                    translate([0,0,height/2],cylinder({r1: large_section_r, r2: small_section_r, h: 1, fn:16})),
+                    cylinder({r:large_section_r, h:height/2, fn:16})
+                ),
+                cylinder({r:hole_r, h:hole_d, fn})
+            ),
+            intersection(
+                translate([0,0,10],connector()),
+                cylinder({r:hole_r, h:hole_d, fn})
+            )
+        )
+    );
 }
-
 
