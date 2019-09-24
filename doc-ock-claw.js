@@ -1,3 +1,5 @@
+
+
 const quality = 1;
 
 const fn = 16 * quality;
@@ -25,7 +27,7 @@ const plateW=45;
 const plateL=100;
 const plateH=4;
 
-const connectorScale = 0.45;
+const connectorScale = 0.48;
 const printSize = 0.95;
 
 const scaleFactor=1/connectorScale;
