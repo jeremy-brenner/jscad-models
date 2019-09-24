@@ -1,4 +1,3 @@
-
 const quality = 1;
 
 const fn = 16 * quality;
@@ -42,8 +41,11 @@ function render() {
     const items = [];
     items.push(plate());
     items.push(claws());
-    //items.push(claw()); // single claw
     items.push(mount());
+ 
+ /* for printing */
+    //items.push(halfPlate()); 
+    //items.push(claw()); 
     
     return union(items);
 }
@@ -73,6 +75,10 @@ function claws() {
         translate([-clawXd,-clawYd,0],rotate([0,0,180+clawA],claw())),
         translate([-clawXd,clawYd,0],rotate([0,0,180-clawA],claw()))
     );
+}
+
+function halfPlate() {
+    return intersection(plate(),translate([-50,0,0],cube([100,100,100])));
 }
 
 function plate() {
@@ -162,6 +168,7 @@ function multipliers(angle) {
     return {cos,sin};
 }
 
+
 function mount() {
     return translate([0,0,15],
         union(
@@ -180,4 +187,3 @@ function mount() {
         )
     );
 }
-
