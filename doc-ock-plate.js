@@ -21,24 +21,18 @@ function main() {
 }
 
 function render() {
-  return union(
-pads(),
-top(),
-translate([-50,0,base_t],tBump()),
- translate([-base_p,-base_p,base_t],bump()),
- translate([base_p,-base_p,base_t],bump()),
- translate([base_p,base_p,base_t],bump()),
-translate([-base_p,base_p,base_t],bump())
-      );
+    const renderables = [];
+    renderables.push(pads());
+    renderables.push(top());
+    renderables.push(translate([-50,0,base_t],tBump({b_height:10,s_length:65,s_width:5,angle:30})));
+    renderables.push(translate([-base_p,-base_p,base_t],bump()));
+    renderables.push(translate([base_p,-base_p,base_t],bump()));
+    renderables.push(translate([base_p,base_p,base_t],bump()));
+    renderables.push(translate([-base_p,base_p,base_t],bump()));
+    return union(renderables);
 }
 
-function tBump() {
-    const b_height = 5;
-    const s_length = 72;
-    const s_width = 10;
-    const angle = 30;
-
-
+function tBump({b_height,s_length,s_width,angle}) {
    const rad = angle/2 * Math.PI/180;
    const x = s_length*Math.cos(rad);
    const y = s_length*Math.sin(rad);
