@@ -22,8 +22,8 @@ function main() {
 
 function render() {
   return union(
-    mount(), 
-     hump()
+    mount()
+  //   hump()
  
 
       );
@@ -41,7 +41,8 @@ function mount() {
           translate([0,0,height/2],cylinder({r1: large_section_r, r2: small_section_r, h: 4, fn:16})),
          cylinder({r:large_section_r, h:height/2, fn:16})
           ),
-         hole()
+         hole(),
+         cylinder({r:8,h:50, fn})
          ),
          flanges()
         );
@@ -74,5 +75,3 @@ translate([-30,-40,0],cube([60,80,60])),
 translate([7,45,30],rotate([0,90,0],cylinder({r: 5, h: 66, fn})))         
    ));
 }
-
-
