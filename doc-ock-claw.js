@@ -47,8 +47,9 @@ function main() {
 function render() {
     //return fullClaw();
     return fullSaw();
- 
+
  /* for printing */
+ // return sawBlade();
  // return plate();
  // return claw();
  // return sawDisk()
@@ -92,15 +93,58 @@ function sawDisks() {
 function sawBlade() {
     return translate([0,0,-31],
         center(true,
-            rotate([90,0,0],
-                difference(
-                    cylinder({r:75,h:2,fn}),
-                    cylinder({r:1.5,h:2,fn})
-                )
+            union(
+                rotate([90,0,0],
+                    difference(
+                        cylinder({r:75,h:2,fn}),
+                        cylinder({r:1.5,h:2,fn})
+                    )
+                ),
+                sawTeeth(72)
             )
         )
     );
 }
+
+function multipliers(angle) {
+    const rad = angle * Math.PI/180;
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+    return {cos,sin};
+}
+
+
+function sawTeeth(r) {
+    return union([...Array(32).keys()].map(i => {
+        const angle = 360/32*i;
+        const {cos,sin} = multipliers(angle);
+        return translate([r*cos, -1, r*sin], rotate([0,-angle+90,0],sawTooth()));
+    }));
+}
+
+function sawTooth() {
+  const w = 2;
+  const l = 15;
+  const h = 15;
+  return polyhedron({     
+    points: [ 
+        [l/2,w/2,0],
+        [l/2,-w/2,0],
+        [-l/2,-w/2,0],
+        [-l/2,w/2,0], 
+        [0,0,h] 
+      ],                         
+    triangles: [ 
+        [0,1,4],
+        [1,2,4],
+        [2,3,4],
+        [3,0,4],
+        [1,0,3],
+        [2,1,3] 
+      ]                 
+  });
+}
+
 
 function sawDisk() {
     return rotate([90,0,0],
