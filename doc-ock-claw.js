@@ -49,6 +49,8 @@ function render() {
     items.push(plate());
     items.push(claws(claw()));
     items.push(mount());
+    items.push(plateInsert());
+    items.push(plateConnector());
  
  /* for printing */
   //  items.push(halfPlate()); 
@@ -66,8 +68,13 @@ function claws(renderedClaw) {
     );
 }
 
-function halfPlate() {
-    return intersection(plate(),translate([-500,0,0],cube([1000,1000,1000])));
+function plateInsert() {
+    return translate([0,0,30],scale([mountSf,mountSf,mountSf],mountSegment(small_section_r-8,small_section_r-6, 7.5)));
+}
+
+function plateConnector() {
+        return translate([0,0,38],scale([mountSf,mountSf,mountSf],cylinder({r:small_section_r-8,h:17,fn})));
+
 }
 
 function plate() {
@@ -80,7 +87,7 @@ function plate() {
                 translate([13.5,0,-1.7], rotate([0,0,180],sideB()))
             )
         ),
-        scale([mountSf,mountSf,mountSf],cylinder({r:large_section_r, h:hole_d, fn: 16}))
+        scale([mountSf,mountSf,mountSf],cylinder({r:small_section_r-6, h:hole_d, fn}))
     );
 }
 
@@ -168,24 +175,37 @@ function multipliers(angle) {
 
 function mount() {
 
-    return translate([0,0,11.5*mountSf],
+    return translate([0,0,30*mountSf],
         union(
-            scale([mountSf,mountSf,mountSf],difference(
-                union(
-                    cylinder({r:small_section_r, h:height, fn:16}),
-                    translate([0,0,height/2],cylinder({r1: large_section_r, r2: small_section_r, h: 1, fn:16})),
-                    cylinder({r:large_section_r, h:height/2, fn:16})
+            scale([mountSf,mountSf,mountSf],
+            union(
+                difference(
+                    union(
+                        translate([0,0,height/2-1],cylinder({r1: small_section_r, r2: large_section_r, h: 1, fn:16})),
+                        translate([0,0,height/2],cylinder({r:large_section_r, h:height/2, fn:16}))
+                    ),
+                    cylinder({r:hole_r, h:hole_d, fn})
                 ),
-                cylinder({r:hole_r, h:hole_d, fn})
-            )),
+                translate([0,0,6],mountSegment(small_section_r-2,small_section_r,4)),
+                translate([0,0,3],mountSegment(small_section_r-4,small_section_r-2,5)),
+                translate([0,0,0],mountSegment(small_section_r-6,small_section_r-4,6)),
+                translate([0,0,-4],mountSegment(small_section_r-8,small_section_r-6,8))
+            )
+            ),
             intersection(
-                translate([0,0,10*mountSf],connector()),
+                translate([0,0,13*mountSf],connector()),
                 scale([mountSf,mountSf,mountSf],cylinder({r:hole_r, h:hole_d, fn}))
             )
         )
     );
 }
 
+function mountSegment(ir,or,h) {
+    return difference(
+        cylinder({r:or, h, fn}),
+        cylinder({r:ir, h, fn})
+    );
+}
 
 function connector() {
     return difference( 
