@@ -51,12 +51,59 @@ function render() {
     items.push(mount());
     items.push(plateInsert());
     items.push(plateConnector());
+
+
+ //items.push(mount());
+ //items.push(sawConnector());
+ //items.push(sawDisks());
  
  /* for printing */
   //  items.push(halfPlate()); 
   //  items.push(claw()); 
     
     return union(items);
+}
+
+function sawDisks() {
+    return translate([0,0,-31],
+        center(true,
+            union(
+                translate([0,2,0],sawDisk()),
+                translate([0,-2,0],sawDisk())
+            )
+        )
+    );
+}
+
+function sawDisk() {
+    return rotate([90,0,0],
+        difference(
+            cylinder({r:18,h:2,fn}),
+            cylinder({r:1.5,h:2,fn})
+        )
+    );
+}
+
+function sawConnector() {
+    return translate([0,0,38],
+        scale([mountSf,mountSf,mountSf],
+            union(
+                translate([0,0,10],cylinder({r:small_section_r-8,h:10,fn})),
+                translate([0,0,10],cylinder({r:small_section_r-6,h:1,fn})),
+                translate([0,0,9],
+                    difference(
+                        sawConnectorSegments(),
+                        translate([0,0,-27],center(true,cube([50,2,50]))),
+                        translate([0,10,-33],rotate([90,0,0],cylinder({r:0.5,h:20,fn})))
+                    )
+                )
+            )    
+        )
+    );
+}
+
+function sawConnectorSegments() {
+    return union([...Array(12).keys()].map(i=>translate([0,0,i*-3],disk({ri:2,ro:6-i/3,fni:fn/2,fno:fn}))));
 }
 
 function claws(renderedClaw) {
