@@ -45,23 +45,36 @@ function main() {
 }
 
 function render() {
-    const items = [];
-    items.push(plate());
-    items.push(claws(claw()));
-    items.push(mount());
-    items.push(plateInsert());
-    items.push(plateConnector());
-
-
- //items.push(mount());
- //items.push(sawConnector());
- //items.push(sawDisks());
+    //return fullClaw();
+    return fullSaw();
  
  /* for printing */
-  //  items.push(halfPlate()); 
-  //  items.push(claw()); 
-    
-    return union(items);
+ // return plate();
+ // return claw();
+ // return sawDisk()
+ // return sawConnector();
+ // return mount();
+ // return plateInsert();
+ // return plateConnector();
+}
+
+function fullSaw() {
+   return union(
+       mount(),
+       sawConnector(),
+       sawDisks(),
+       sawBlade()
+    );
+}
+
+function fullClaw() {
+    return union(
+        plate(),
+        claws(claw()),
+        mount(),
+        plateInsert(),
+        plateConnector()
+    );
 }
 
 function sawDisks() {
@@ -70,6 +83,20 @@ function sawDisks() {
             union(
                 translate([0,2,0],sawDisk()),
                 translate([0,-2,0],sawDisk())
+            )
+        )
+    );
+}
+
+
+function sawBlade() {
+    return translate([0,0,-31],
+        center(true,
+            rotate([90,0,0],
+                difference(
+                    cylinder({r:75,h:2,fn}),
+                    cylinder({r:1.5,h:2,fn})
+                )
             )
         )
     );
