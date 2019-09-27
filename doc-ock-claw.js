@@ -1,5 +1,4 @@
 
-
 const quality = 1;
 
 const fn = 16 * quality;
@@ -45,15 +44,15 @@ function main() {
 }
 
 function render() {
-    //return fullClaw();
+// return fullClaw();
     return fullSaw();
 
  /* for printing */
- // return sawBlade();
+  //return sawBlade();
  // return plate();
  // return claw();
  // return sawDisk()
- // return sawConnector();
+  //return sawConnector();
  // return mount();
  // return plateInsert();
  // return plateConnector();
@@ -79,7 +78,7 @@ function fullClaw() {
 }
 
 function sawDisks() {
-    return translate([0,0,-31],
+    return translate([0,0,-45.5],
         center(true,
             union(
                 translate([0,2,0],sawDisk()),
@@ -91,16 +90,16 @@ function sawDisks() {
 
 
 function sawBlade() {
-    return translate([0,0,-31],
+    return translate([0,0,-45.5],
         center(true,
             union(
                 rotate([90,0,0],
                     difference(
-                        cylinder({r:75,h:2,fn}),
+                        cylinder({r:92,h:2,fn}),
                         cylinder({r:1.5,h:2,fn})
                     )
                 ),
-                sawTeeth(72)
+                sawTeeth(91)
             )
         )
     );
@@ -117,14 +116,15 @@ function multipliers(angle) {
 function sawTeeth(r) {
     return union([...Array(32).keys()].map(i => {
         const angle = 360/32*i;
+        const l = 360/32*r/50;
         const {cos,sin} = multipliers(angle);
-        return translate([r*cos, -1, r*sin], rotate([0,-angle+90,0],sawTooth()));
+        return translate([r*cos, -1, r*sin], rotate([0,-angle+90,0],sawTooth(l)));
     }));
 }
 
-function sawTooth() {
+function sawTooth(l) {
   const w = 2;
-  const l = 15;
+  //const l = 18;
   const h = 15;
   return polyhedron({     
     points: [ 
@@ -132,7 +132,7 @@ function sawTooth() {
         [l/2,-w/2,0],
         [-l/2,-w/2,0],
         [-l/2,w/2,0], 
-        [0,0,h] 
+        [0,-w/2,h] 
       ],                         
     triangles: [ 
         [0,1,4],
@@ -164,8 +164,8 @@ function sawConnector() {
                 translate([0,0,9],
                     difference(
                         sawConnectorSegments(),
-                        translate([0,0,-27],center(true,cube([50,2,50]))),
-                        translate([0,10,-33],rotate([90,0,0],cylinder({r:0.5,h:20,fn})))
+                        translate([0,0,-26],center(true,cube([50,2,50]))),
+                        translate([0,10,-38.5],rotate([90,0,0],cylinder({r:0.5,h:20,fn})))
                     )
                 )
             )    
@@ -174,7 +174,7 @@ function sawConnector() {
 }
 
 function sawConnectorSegments() {
-    return union([...Array(12).keys()].map(i=>translate([0,0,i*-3],disk({ri:2,ro:6-i/3,fni:fn/2,fno:fn}))));
+    return union([...Array(12).keys()].map(i=>translate([0,0,i*-3.5],disk({ri:2.5,ro:6-i/3,fni:fn/2,fno:fn}))));
 }
 
 function claws(renderedClaw) {
