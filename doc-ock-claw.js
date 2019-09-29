@@ -44,18 +44,18 @@ function main() {
 }
 
 function render() {
-// return fullClaw();
-    return fullSaw();
+   return fullClaw();
+  //  return fullSaw();
 
  /* for printing */
  // return sawBlade();
- // return plate();
- // return claw();
- // return sawDisk()
+//  return plate();
+//  return claw();
+//  return sawDisk()
  // return sawConnector();
  // return mount();
- // return plateInsert();
- // return plateConnector();
+//  return plateInsert();
+//  return plateConnector();
 }
 
 function fullSaw() {
@@ -150,8 +150,8 @@ function sawTooth(l,h) {
 function sawDisk() {
     return rotate([90,0,0],
         difference(
-            cylinder({r:18,h:2,fn}),
-            cylinder({r:1.5,h:2,fn})
+            cylinder({r:22,h:1.5,fn}),
+            cylinder({r:1.5,h:1.5,fn})
         )
     );
 }
@@ -341,4 +341,3 @@ function connector() {
         translate([-40,-26.5,-15],cube([80,53,30]))
     );
 }
-
