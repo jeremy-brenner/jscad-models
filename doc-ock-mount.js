@@ -13,14 +13,28 @@ const printSize = 0.95;
 
 function main() {
     const start = Date.now();
-    const model = scale([printSize,printSize,printSize],render());
+    const model = render();
     const runTime = Date.now() - start;
     console.log(runTime/1000);
     return model;
 }
 
 function render() {
-  return mount();
+    return difference(
+        scale([printSize,printSize,printSize],mount()),
+        cylinder({r:8,h:50, fn}),
+        translate([-16,0], screwHole()),
+        translate([0,-16], screwHole()),
+        translate([16,0], screwHole()),
+        translate([0,16], screwHole())
+    );
+}
+
+function screwHole() {
+    return union(
+        cylinder({r:1.5,h:50, fn}),
+        translate([0,0,8],cylinder({r:3,h:50, fn:6}))
+    );
 }
 
 function mount() {
@@ -31,8 +45,7 @@ function mount() {
           translate([0,0,height/2],cylinder({r1: large_section_r, r2: small_section_r, h: 4, fn:16})),
          cylinder({r:large_section_r, h:height/2, fn:16})
           ),
-         hole(),
-         cylinder({r:8,h:50, fn})
+         hole()
          ),
          flanges()
         );
@@ -56,4 +69,3 @@ function flanges() {
         )
    );
 }
-
