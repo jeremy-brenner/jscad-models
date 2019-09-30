@@ -22,16 +22,49 @@ function main() {
 
 function render() {
     const renderables = [];
-    renderables.push(pads());
-    renderables.push(top());
-    renderables.push(translate([-27,0,0],rotate([0,0,180],tBump({b_height:10,s_length:45,s_width:5,angle:25}))));
-    renderables.push(translate([-57,0,0],tBump({b_height:10,s_length:80,s_width:5,angle:25})));
-    renderables.push(translate([10,0,0],tBump({b_height:10,s_length:80,s_width:5,angle:25})));
-    renderables.push(translate([-base_p,-base_p,base_t],bump()));
-    renderables.push(translate([base_p,-base_p,base_t],bump()));
-    renderables.push(translate([base_p,base_p,base_t],bump()));
-    renderables.push(translate([-base_p,base_p,base_t],bump()));
+    renderables.push(base());
+    renderables.push(centerBumps());
+    renderables.push(connectorBumps());     
+
     return union(renderables);
+}
+
+function base() {
+    return union(
+        pads(),
+        top(),
+        translate([20,90,0],wing()),
+        translate([20,-90,0],mirror([0,1,0],wing())),
+        translate([-30,-50,0],cube([120,100,base_t]))
+    );
+}
+
+function connectorBumps() {
+    return union(
+        translate([-base_p,-base_p,base_t],bump()),
+        translate([base_p,-base_p-5,base_t],bump()),
+        translate([base_p,base_p+5,base_t],bump()),
+        translate([-base_p,base_p,base_t],bump())
+    );
+}
+function centerBumps() {
+    return union(
+        translate([-27,0,0],rotate([0,0,180],tBump({b_height:10,s_length:45,s_width:5,angle:25}))),
+        translate([-57,0,0],tBump({b_height:10,s_length:80,s_width:5,angle:35})),
+        translate([-8,0,0],tBump({b_height:10,s_length:90,s_width:1,angle:25}))
+    );
+}
+
+function wing() {
+    return union( 
+        cylinder({r:base_r/2,h:base_t, fn}),
+        rotate([0,0,-16],translate([0,-30.5,0],cube([50,50,base_t]))),
+      
+        difference(
+            rotate([0,0,30],translate([-50,-45,0],cube([50,50,base_t]))),
+              translate([-30,-10,0],cylinder({r:base_r/3.3,h:base_t*4, fn}))
+            )
+    );
 }
 
 function tBump({b_height,s_length,s_width,angle}) {
@@ -58,22 +91,22 @@ function tBump({b_height,s_length,s_width,angle}) {
 function top() {
     return difference(
         union(
-        translate([-base_p,-base_p,0],cylinder({r:base_r,h:base_t, fn})),
-translate([-base_p,base_p,0],cylinder({r:base_r,h:base_t, fn})),
-    translate([-base_p-base_r+2,-base_p,0],cube([base_r*2,base_p*2,base_t]))
-),
-scale([1,1.5,1],translate([-119.3,0,0],cylinder({r:base_r,h:30, fn})))
+            translate([-base_p,-base_p,0],cylinder({r:base_r,h:base_t, fn})),
+            translate([-base_p,base_p,0],cylinder({r:base_r,h:base_t, fn})),
+            translate([-base_p-base_r+2,-base_p,0],cube([base_r*2,base_p*2,base_t]))
+        ),
+        scale([1,1.52,1],translate([-121.2,0,0],cylinder({r:base_r,h:30, fn})))
 );
 
 }
 
 function pads() {
-      return union(
-
-translate([base_p,-base_p,0],cylinder({r:base_r,h:base_t, fn})),
-translate([base_p,base_p,0],cylinder({r:base_r,h:base_t, fn}))
-);
+    return union(
+        translate([base_p,-base_p-5,0],cylinder({r:base_r,h:base_t, fn})),
+        translate([base_p,base_p+5,0],cylinder({r:base_r,h:base_t, fn}))
+    );
 }
+
 
 
 function rBevel(r,l) {
