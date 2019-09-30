@@ -1,6 +1,6 @@
 const base_r = 40;
 const base_d = 15;
-const base_t = 2;
+const base_t = 5;
 const base_p = base_r+base_d;
 
 const bump_r = 39;
@@ -49,10 +49,11 @@ function base() {
             translate([20,-90,0],mirror([0,1,0],wing())),
             translate([-30,-50,0],cube([120,100,base_t]))
         ),
-        translate([-base_p,-base_p,0],cylinder({r:bump_h_r, h:28, fn})),
-        translate([-base_p,base_p,0],cylinder({r:bump_h_r, h:28, fn})),
-        translate([base_p,-base_p-5,0],cylinder({r:bump_h_r, h:28, fn})),
-        translate([base_p,base_p+5,0],cylinder({r:bump_h_r, h:28, fn}))
+        translate([-base_p,-base_p,2],cylinder({r:bump_h_r, h:28, fn})),
+        translate([-base_p,base_p,2],cylinder({r:bump_h_r, h:28, fn})),
+        translate([base_p,-base_p-5,2],cylinder({r:bump_h_r, h:28, fn})),
+        translate([base_p,base_p+5,2],cylinder({r:bump_h_r, h:28, fn})),
+        translate([-80,-65,0],cube([160,130,base_t-2]))
     );
 }
 
@@ -67,11 +68,11 @@ function connectorBumps() {
 function centerBumps() {
     return difference(
         union(
-            translate([-47,0,-3],rotate([0,0,180],tBump({b_height:10,s_length:25,s_width:10,angle:20}))),
-            translate([-40,0,-3],tBump({b_height:10,s_length:66,s_width:10,angle:35})),
-            translate([29,0,-3],tBump({b_height:10,s_length:54,s_width:15,angle:25}))
+            translate([-47,0,0],rotate([0,0,180],tBump({b_height:10,s_length:25,s_width:10,angle:20}))),
+            translate([-40,0,0],tBump({b_height:10,s_length:66,s_width:10,angle:35})),
+            translate([29,0,0],tBump({b_height:10,s_length:54,s_width:15,angle:25}))
         ),
-        translate([-150,-150,-3],cube([300,300,5]))
+        translate([-150,-150,0],cube([300,300,5]))
     );
 }
 
