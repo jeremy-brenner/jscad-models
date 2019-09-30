@@ -25,6 +25,14 @@ function main() {
 }
 
 function render() {
+     return fullPiece();
+    
+    //for printing
+    //return intersection(fullPiece(), cube(200,200,200));
+    //return intersection(fullPiece(), translate([-200,0,0],cube(200,200,200)));
+}
+
+function fullPiece() {
     const renderables = [];
     renderables.push(base());
     renderables.push(centerBumps());
@@ -146,4 +154,3 @@ function bump() {
         cylinder({r:bump_h_r, h:28, fn})
     );
 }
-
