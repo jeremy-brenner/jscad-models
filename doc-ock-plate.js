@@ -1,6 +1,6 @@
 const base_r = 40;
 const base_d = 15;
-const base_t = 5;
+const base_t = 2;
 const base_p = base_r+base_d;
 
 const bump_r = 39;
@@ -11,10 +11,14 @@ const quality = 1;
 
 const fn = 16 * quality;
 
+const scaleBumpHRTo = 50;
+
+const scaleFactor = scaleBumpHRTo/bump_h_r;
+
 
 function main() {
     const start = Date.now();
-    const model = render();
+    const model = scale(scaleFactor,render());
     const runTime = Date.now() - start;
     console.log(runTime/1000);
     return model;
@@ -25,33 +29,41 @@ function render() {
     renderables.push(base());
     renderables.push(centerBumps());
     renderables.push(connectorBumps());     
-
     return union(renderables);
 }
 
 function base() {
-    return union(
-        pads(),
-        top(),
-        translate([20,90,0],wing()),
-        translate([20,-90,0],mirror([0,1,0],wing())),
-        translate([-30,-50,0],cube([120,100,base_t]))
+    return difference(
+        union(
+            pads(),
+            top(),
+            translate([20,90,0],wing()),
+            translate([20,-90,0],mirror([0,1,0],wing())),
+            translate([-30,-50,0],cube([120,100,base_t]))
+        ),
+        translate([-base_p,-base_p,0],cylinder({r:bump_h_r, h:28, fn})),
+        translate([-base_p,base_p,0],cylinder({r:bump_h_r, h:28, fn})),
+        translate([base_p,-base_p-5,0],cylinder({r:bump_h_r, h:28, fn})),
+        translate([base_p,base_p+5,0],cylinder({r:bump_h_r, h:28, fn}))
     );
 }
 
 function connectorBumps() {
     return union(
         translate([-base_p,-base_p,base_t],bump()),
+        translate([-base_p,base_p,base_t],bump()),
         translate([base_p,-base_p-5,base_t],bump()),
-        translate([base_p,base_p+5,base_t],bump()),
-        translate([-base_p,base_p,base_t],bump())
+        translate([base_p,base_p+5,base_t],bump())
     );
 }
 function centerBumps() {
-    return union(
-        translate([-27,0,0],rotate([0,0,180],tBump({b_height:10,s_length:45,s_width:5,angle:25}))),
-        translate([-57,0,0],tBump({b_height:10,s_length:80,s_width:5,angle:35})),
-        translate([-8,0,0],tBump({b_height:10,s_length:90,s_width:1,angle:25}))
+    return difference(
+        union(
+            translate([-47,0,-3],rotate([0,0,180],tBump({b_height:10,s_length:25,s_width:10,angle:20}))),
+            translate([-40,0,-3],tBump({b_height:10,s_length:66,s_width:10,angle:35})),
+            translate([29,0,-3],tBump({b_height:10,s_length:54,s_width:15,angle:25}))
+        ),
+        translate([-150,-150,-3],cube([300,300,5]))
     );
 }
 
@@ -126,11 +138,12 @@ function bevel(r,l,s) {
 
 
 function bump() {
-          return difference(
-      intersection(
-          translate([0,0,-bump_z],sphere({r:bump_r,fn})),
-          translate([-bump_r,-bump_r,0],cube([bump_r*2,bump_r*2,28]))
-          ),
-          cylinder({r:bump_h_r, h:28, fn})
-          )
+    return difference(
+        intersection(
+            translate([0,0,-bump_z],sphere({r:bump_r,fn})),
+            translate([-bump_r,-bump_r,0],cube([bump_r*2,bump_r*2,28]))
+        ),
+        cylinder({r:bump_h_r, h:28, fn})
+    );
 }
+
