@@ -1,6 +1,6 @@
 const base_r = 40;
-const base_d = 10;
-const base_t = 2;
+const base_d = 15;
+const base_t = 5;
 const base_p = base_r+base_d;
 
 const bump_r = 39;
@@ -24,7 +24,9 @@ function render() {
     const renderables = [];
     renderables.push(pads());
     renderables.push(top());
-    renderables.push(translate([-50,0,base_t],tBump({b_height:10,s_length:65,s_width:5,angle:30})));
+    renderables.push(translate([-27,0,0],rotate([0,0,180],tBump({b_height:10,s_length:45,s_width:5,angle:25}))));
+    renderables.push(translate([-57,0,0],tBump({b_height:10,s_length:80,s_width:5,angle:25})));
+    renderables.push(translate([10,0,0],tBump({b_height:10,s_length:80,s_width:5,angle:25})));
     renderables.push(translate([-base_p,-base_p,base_t],bump()));
     renderables.push(translate([base_p,-base_p,base_t],bump()));
     renderables.push(translate([base_p,base_p,base_t],bump()));
