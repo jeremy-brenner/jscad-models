@@ -25,19 +25,21 @@ function main() {
 }
 
 function render() {
-     return fullPiece();
     
-    //for printing
-    //return intersection(fullPiece(), cube(200,200,200));
-    //return intersection(fullPiece(), translate([-200,0,0],cube(200,200,200)));
-}
-
-function fullPiece() {
     const renderables = [];
     renderables.push(base());
     renderables.push(centerBumps());
     renderables.push(connectorBumps());     
     return union(renderables);
+    
+    //for printing
+    //renderables.push(base());
+    //renderables.push(connectorBumps());
+    //return intersection(union(renderables), cube(200,200,200));
+    //return intersection(union(renderables), translate([-200,0,0],cube(200,200,200)));
+    
+    //return intersection(translate([0,-100,0],cube(200,200,200)),centerBumps());
+    //return intersection(translate([-200,-100,0],cube(200,200,200)),centerBumps());
 }
 
 function base() {
