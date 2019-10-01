@@ -37,9 +37,11 @@ function render() {
     //renderables.push(connectorBumps());
     //return intersection(union(renderables), cube(200,200,200));
     //return intersection(union(renderables), translate([-200,0,0],cube(200,200,200)));
-    
-    //return intersection(translate([0,-100,0],cube(200,200,200)),centerBumps());
-    //return intersection(translate([-200,-100,0],cube(200,200,200)),centerBumps());
+  
+//  return bump1();
+  //return bump2();
+    // return bump3();
+
 }
 
 function base() {
@@ -67,15 +69,32 @@ function connectorBumps() {
         translate([base_p,base_p+5,base_t],bump())
     );
 }
-function centerBumps() {
+
+function bump1() {
     return difference(
-        union(
-            translate([-47,0,0],rotate([0,0,180],tBump({b_height:10,s_length:25,s_width:10,angle:20}))),
-            translate([-40,0,0],tBump({b_height:10,s_length:66,s_width:10,angle:35})),
-            translate([29,0,0],tBump({b_height:10,s_length:54,s_width:15,angle:25}))
-        ),
+        translate([-47,0,0],rotate([0,0,180],tBump({b_height:10,s_length:25,s_width:10,angle:20}))),
+        translate([-150,-150,0],cube([300,300,5])),
+        bump2()
+    );
+}
+
+function bump2() {
+    return difference( 
+        translate([-40,0,0],tBump({b_height:10,s_length:66,s_width:10,angle:35})),
         translate([-150,-150,0],cube([300,300,5]))
     );
+
+}
+function bump3() {
+    return difference( 
+        translate([29,0,0],tBump({b_height:10,s_length:54,s_width:15,angle:25})),
+        translate([-150,-150,0],cube([300,300,5])),
+        bump2()
+    );
+}
+
+function centerBumps() {
+    return union( bump1(), bump2(), bump3() );
 }
 
 function wing() {
