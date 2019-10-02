@@ -1,8 +1,8 @@
-const height = 60;
-const hole_r = 45;
+const height = 50;
+const hole_r = 38;
 const hole_d = 40;
 const inner_height = height-hole_d;
-const small_section_r = hole_r + 5;
+const small_section_r = hole_r + 3;
 const large_section_r = small_section_r + 2;
 
 const quality = 4;
@@ -32,8 +32,8 @@ function render() {
 
 function screwHole() {
     return union(
-        cylinder({r:1.5,h:50, fn}),
-        translate([0,0,8],cylinder({r:3,h:50, fn:6}))
+        cylinder({r:1.7,h:50, fn}),
+        translate([0,0,8],cylinder({r:3.2,h:50, fn:6}))
     );
 }
 
@@ -54,16 +54,16 @@ function mount() {
 function hole() {
   return translate([0,0,inner_height],intersection( 
     cylinder({r:hole_r, h:hole_d, fn}),
-    translate([-hole_r,-hole_r,0],cube([hole_r*2,hole_r+hole_r/2,hole_d]))   
+    translate([-hole_r,-hole_r,0],cube([hole_r*2,hole_r*1.75,hole_d]))   
   ));
 }
 
 function flanges() {
-    return translate([0,0,inner_height], 
+    return translate([0,0,inner_height*1.5], 
         difference(
-            translate([-33,-36,0],cube([66,72,30])),
-            translate([-33,-12,18],rotate([0,90,0],cylinder({r: 5, h: 66, fn}))),
-            translate([-31,-17,18],cube([62,10,12])),
+            translate([-33,-22,0],cube([66,44,30])),
+            translate([-33,-7,18],rotate([0,90,0],cylinder({r: 5, h: 66, fn}))),
+            translate([-31,-12,18],cube([62,10,12])),
             translate([-30,-40,0],cube([60,80,60])),
             translate([7,45,30],rotate([0,90,0],cylinder({r: 5, h: 66, fn})))         
         )
