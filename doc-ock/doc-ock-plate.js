@@ -35,14 +35,14 @@ function render() {
     return union(renderables);
     
     //for printing
-  //  renderables.push(base());
-//    renderables.push(connectorBumps());
-   // return intersection(union(renderables), cube(200,200,200));
-    //return intersection(union(renderables), translate([-200,0,0],cube(200,200,200)));
+//    renderables.push(base());
+  //  renderables.push(connectorBumps());
+  //  return intersection(union(renderables), cube(200,200,200));
+  //  return intersection(union(renderables), translate([-200,0,0],cube(200,200,200)));
   
-//  return bump1();
-  //return bump2();
-    // return bump3();
+ //return bump1();
+ // return bump2();
+   //  return bump3();
 
 }
 
@@ -84,14 +84,14 @@ function bump1() {
 
 function bump2() {
     return difference( 
-        translate([-43,0,-3],tBump({b_height:10,s_length:60,s_width:5,angle:35})),
+        translate([-43,0,-3],tBump({b_height:10,s_length:58,s_width:5,angle:35})),
         translate([-150,-150,-3],cube([300,300,8]))
     );
 
 }
 function bump3() {
     return difference( 
-        translate([22.5,0,-3],tBump({b_height:10,s_length:51,s_width:5,angle:20})),
+        translate([19.5,0,-3],tBump({b_height:10,s_length:53,s_width:1,angle:15})),
         translate([-150,-150,-3],cube([300,300,8])),
         bump2()
     );
