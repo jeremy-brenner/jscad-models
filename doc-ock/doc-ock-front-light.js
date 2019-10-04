@@ -13,8 +13,13 @@ function main() {
 }
 
 function render() {
-    return union(
-        cylinder({r:20,h:1,fn}),
+return blackPart();
+}
+
+
+function blackPart() {
+       return union(
+        cylinder({r:18,h:1,fn}),
         difference(
             cylinder({r:16,h:4,fn}),
             cylinder({r:10,h:4,fn}),
@@ -23,8 +28,9 @@ function render() {
             translate([0,16,0],cylinder({r:4,h:4,fn})),
             translate([0,-16,0],cylinder({r:4,h:4,fn}))
         )
-    );
-
+    ); 
 }
 
-
+function insert() {
+    return cylinder({r:10,h:2,fn});
+}

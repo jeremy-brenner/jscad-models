@@ -7,6 +7,10 @@ const bump_r = 39;
 const bump_h_r = bump_r * 0.7;
 const bump_z = bump_r * 0.45;
 
+const center_bump_h = 8;
+const center_bump_r = 10;
+const center_bump_d = center_bump_r-center_bump_h;
+
 const quality = 1;
 
 const fn = 16 * quality;
@@ -40,9 +44,9 @@ function render() {
   //  return intersection(union(renderables), cube(200,200,200));
   //  return intersection(union(renderables), translate([-200,0,0],cube(200,200,200)));
   
- //return bump1();
- // return bump2();
-   //  return bump3();
+//return difference(bump1(), bump2());
+  //return bump2();
+    // return difference(bump3(), bump2());
 
 }
 
@@ -72,33 +76,34 @@ function connectorBumps() {
     );
 }
 
-
-
 function bump1() {
-    return difference(
-        translate([-50,0,-3],rotate([0,0,180],tBump({b_height:10,s_length:22,s_width:5,angle:30}))),
-        translate([-150,-150,-3],cube([300,300,8])),
-        bump2()
+    return translate([0,0,-center_bump_d],
+        difference(
+            translate([-50.5,0,0],rotate([0,0,180],tBump({b_height:center_bump_r,s_length:18,s_width:0.1,angle:30}))),
+            translate([-150,-150,0],cube([300,300,center_bump_d]))
+        )
     );
 }
 
 function bump2() {
-    return difference( 
-        translate([-43,0,-3],tBump({b_height:10,s_length:58,s_width:5,angle:35})),
-        translate([-150,-150,-3],cube([300,300,8]))
+    return translate([0,0,-center_bump_d],
+        difference( 
+            translate([-42,0,0],tBump({b_height:center_bump_r,s_length:55,s_width:0.1,angle:35})),
+            translate([-150,-150,0],cube([300,300,center_bump_d]))
+        )
     );
-
 }
 function bump3() {
-    return difference( 
-        translate([19.5,0,-3],tBump({b_height:10,s_length:53,s_width:1,angle:15})),
-        translate([-150,-150,-3],cube([300,300,8])),
-        bump2()
+    return translate([0,0,-center_bump_d],
+        difference( 
+            translate([22.5,0,0],tBump({b_height:center_bump_r,s_length:46,s_width:0.1,angle:10})),
+            translate([-150,-150,0],cube([300,300,center_bump_d]))
+        )
     );
 }
 
 function centerBumps() {
-    return union( bump1(), bump2(), bump3() );
+    return translate([0,0,base_t], union( bump1(), bump2(), bump3() ));
 }
 
 function wing() {
