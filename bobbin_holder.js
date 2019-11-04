@@ -44,9 +44,9 @@ function post() {
 
 function radialTranslate(angle,distance,obj) {
     const rad = angle * Math.PI/180;
-    const cos = Math.cos(rad);
-    const sin = Math.sin(rad);
-    return translate([distance*cos,distance*sin, 0], rotate([0,0,angle],obj));
+    const x = distance*Math.cos(rad);
+    const y = distance*Math.sin(rad);
+    return translate([x,y,0],rotate([0,0,angle],obj));
 }
 
 
