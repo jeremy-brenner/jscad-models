@@ -1,0 +1,99 @@
+
+const res = 32;
+
+
+function main() {
+    const posCube = cube({size:[50,50,50], center:[true,true,false]});
+    const bump = translate([0,0,3.25],rotate([0,90,0],rotate([0,0,45],diamond(1.25))));
+    const bumps = union( iterate(8).map( (i) => radialTranslate(i*360/8,15,bump) ) );
+    const cutouts = union( iterate(8).map( (i) =>  radialTranslate(i*360/8+360/16,13, cutout() )) );
+    const humpRing = torus({ri:0.5,ro:11,fni:res/2,fno:res});
+    const humpRings = union( iterate(4).map( (i) => translate([0,0,4],rotate([i*360/8+236/16,90,0],humpRing))));
+    const centerHump = difference( 
+        union(
+            hump(11),
+            humpRings
+        ),
+        hump(10), 
+        cylinder({r:3,fn:res, h:20})  
+    );
+
+    const main = union(
+        translate([0,0,0.75],torus({ri:0.75,ro:15,fni:res/2,fno:res})),
+        difference(
+            cylinder({r:15,fn:res, h:10}),
+            cylinder({r:14,fn:res, h:10}),
+            cutouts
+
+        ),
+        difference(
+            cylinder({r:15,fn:res, h:1}),
+            cylinder({r:11,fn:res, h:1})
+        ),
+        bumps,
+    
+        centerHump
+        );
+        
+    return intersection(main,posCube);
+}
+
+function cutout() {
+    const smallCyl = rotate([0,90,0],cylinder({r:1.5,fn:res, h:2})); 
+    const largeCyl = rotate([0,90,0],cylinder({r:18,fn:res*2, h:2})); 
+    const smallCube = cube({size:[2,2.5,2.5], center: [false,true,true]});
+    return union(
+        translate([0,3.25,6],smallCyl),
+        translate([0,-3.25,6],smallCyl),
+        translate([0,2.95,7],rotate([30,0,0],smallCube)),
+        translate([0,-2.95,7],rotate([-30,0,0],smallCube)),
+        translate([0,3.5,10],rotate([-45,0,0],smallCube)),
+        translate([0,-3.5,10],rotate([45,0,0],smallCube)),
+translate([0,0,5],cube({size:[2,6.5,8], center:[false,true,false]})),
+        intersection(
+            translate([0,0,22.17],largeCyl), 
+            translate([0,-3.75,0],cube({size:[12,7.5,8]}))
+        )
+    );
+}
+
+function diamond(size) {
+  return polyhedron({     
+    points: [ 
+        [size,size,0],
+        [size,-size,0],
+        [-size,-size,0],
+        [-size,size,0], 
+        [0,0,size] 
+      ],                         
+    triangles: [ 
+        [0,1,4],
+        [1,2,4],
+        [2,3,4],
+        [3,0,4],
+        [1,0,3],
+        [2,1,3] 
+      ]                 
+  });
+}
+
+function radialTranslate(angle,distance,obj) {
+  const rad = angle * Math.PI/180;
+  const x = distance*Math.cos(rad);
+  const y = distance*Math.sin(rad);
+  return translate([x,y,0],rotate([0,0,angle],obj));
+}
+
+function iterate(num) {
+    return [...Array(num).keys()];
+}
+
+function hump(r) {
+ return       difference(
+            union( 
+                translate([0,0,4], sphere({r:r, fn:res})), 
+                cylinder({r,fn:res, h:4})
+            ),
+            translate([0,0,-10],cylinder({r,fn:res, h:10})));
+        
+}
