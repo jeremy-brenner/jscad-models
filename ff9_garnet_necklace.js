@@ -1,4 +1,4 @@
-const res = 16*1;
+const res = 16*4;
 
 
 function main() {
@@ -14,7 +14,7 @@ function main() {
     const cutout = cutoutf();
     const cutouts = union( iterate(8).map( (i) =>  radialTranslate(i*360/8+360/16,13, cutout)) );
     const humpRing = torus({ri:0.5,ro:11,fni:res/2,fno:res});
-    const humpRings = union( iterate(4).map( (i) => translate([0,0,4],rotate([i*360/8+236/16,90,0],humpRing))));
+    const humpRings = union( iterate(4).map( (i) => translate([0,0,4],rotate([i*360/8+360/16,90,0],humpRing))));
     const outerRing =  translate([0,0,0.75],torus({ri:0.75,ro:15,fni:res/2,fno:res}));
     const topRing =  translate([0,0,2.5],rotate([0,90,0],torus({ri:1,ro:14,fni:res/2,fno:res})));
 
