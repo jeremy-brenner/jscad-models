@@ -1,4 +1,4 @@
-const res = 16*4;
+const res = 16*1;
 
 
 function main() {
@@ -6,6 +6,15 @@ function main() {
     const bump = translate([0,0,3.25],rotate([0,90,0],rotate([0,0,45],diamond(1.25))));
     const bumps = union( iterate(8).map( (i) => radialTranslate(i*360/8,15,bump) ) );
     const topCyl = cylinder({r:3,fn:res, h:3});
+    const crossBit = translate([0,-1.5,0],linear_extrude({ center: true, height: 1 }, polygon({ points: [ [0,0],[2,0],[1.5,1], [0.5,1] ] })));
+    const cross = scale([2,2,1],union(crossBit, 
+      rotate([0,0,90],crossBit),
+      rotate([0,0,180],crossBit),
+      rotate([0,0,270],crossBit),
+      cube({size:[1,2,1], center: true}),
+      cube({size:[2,1,1], center: true})
+      ));
+
     const topBit = union(
         translate([0,0,14.5], topCyl),
         translate([0,0,17.5],cylinder({r:2.5,fn:res, h:0.5})),
@@ -40,7 +49,7 @@ function main() {
             cylinder({r:15,fn:res, h:1}),
             cylinder({r:11,fn:res, h:1})
         ),
-    //    topBit,
+        translate([14,0,8],rotate([0,90,0],cross)),
         bumps,
     
         centerHump,
