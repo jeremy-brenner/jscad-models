@@ -1,11 +1,11 @@
 
-  
+  const r = 6;
+
   function main() {
     return difference(
         badge(),
-        translate([10,0,-2.3],cylinder({ r:4, h: 2.5})),
-        translate([-10,0,-2.3],cylinder({ r:4, h: 2.5}))
-
+        translate([10,0,-2.3],cylinder({ r, h: 2.5})),
+        translate([-10,0,-2.3],cylinder({ r, h: 2.5}))
     );
 }
 
