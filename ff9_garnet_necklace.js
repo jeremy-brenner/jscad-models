@@ -1,4 +1,5 @@
-const res = 16*2;
+const res = 16*1;
+
 
 function main() {
     const posCube = cube({size:[50,50,50], center:[true,true,false]});
@@ -55,8 +56,11 @@ function main() {
         outerRing
         
         );
-        
-    return intersection(main,posCube);
+       notched = difference(main, 
+       translate([0,11,0],sphere({r:2,fn:res})),
+       translate([0,-11,0],sphere({r:2,fn:res}))
+       );
+    return intersection(notched,posCube);
 }
 
 function cutoutf() {
