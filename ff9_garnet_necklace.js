@@ -1,4 +1,4 @@
-const res = 16*1;
+const res = 16*2;
 
 
 function main() {
@@ -49,7 +49,7 @@ function main() {
             cylinder({r:15,fn:res, h:1}),
             cylinder({r:11,fn:res, h:1})
         ),
-        translate([14,0,8],rotate([0,90,0],cross)),
+        translate([14.5,0,8],rotate([0,90,0],cross)),
         bumps,
     
         centerHump,
