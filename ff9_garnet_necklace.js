@@ -1,6 +1,5 @@
 const res = 16*2;
 
-
 function main() {
     const posCube = cube({size:[50,50,50], center:[true,true,false]});
     const bump = translate([0,0,3.25],rotate([0,90,0],rotate([0,0,45],diamond(1.25))));
@@ -16,25 +15,25 @@ function main() {
       ));
 
     const topBit = union(
-        translate([0,0,14.5], topCyl),
-        translate([0,0,17.5],cylinder({r:2.5,fn:res, h:0.5})),
-        translate([0,0,18], topCyl)
+        translate([0,0,15.5], topCyl),
+        translate([0,0,18.5],cylinder({r:2.5,fn:res, h:0.5})),
+        translate([0,0,19], topCyl)
         );
     const cutout = cutoutf();
     const cutouts = union( iterate(8).map( (i) =>  radialTranslate(i*360/8+360/16,13, cutout)) );
-    const humpRing = torus({ri:0.5,ro:11,fni:res/2,fno:res});
+    const humpRing = torus({ri:0.5,ro:12,fni:res/2,fno:res});
     const humpRings = union( iterate(4).map( (i) => translate([0,0,4],rotate([i*360/8+360/16,90,0],humpRing))));
     const outerRing =  translate([0,0,0.75],torus({ri:0.75,ro:15,fni:res/2,fno:res}));
-    const topRing =  translate([0,0,2.5],rotate([0,90,0],torus({ri:1,ro:14,fni:res/2,fno:res})));
+    const topRing =  translate([0,0,3.5],rotate([0,90,0],torus({ri:1,ro:14,fni:res/2,fno:res})));
 
     const centerHump = difference( 
         union(
-            hump(11),
+            hump(12),
             humpRings,
             topBit,
             topRing
         ),
-        hump(10),
+        hump(11),
         cylinder({r:2,fn:res, h:30})
     );
 
@@ -47,7 +46,7 @@ function main() {
         ),
         difference(
             cylinder({r:15,fn:res, h:1}),
-            cylinder({r:11,fn:res, h:1})
+            cylinder({r:12,fn:res, h:1})
         ),
         translate([14.5,0,8],rotate([0,90,0],cross)),
         bumps,
