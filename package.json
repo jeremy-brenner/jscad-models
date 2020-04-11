@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/jeremy-brenner/jscad-models/issues"
   },
-  "homepage": "https://github.com/jeremy-brenner/jscad-models#readme"
+  "homepage": "https://github.com/jeremy-brenner/jscad-models#readme",
+  "dependencies": {
+    "glob": "^7.1.6",
+    "node-watch": "^0.6.3"
+  }
 }
