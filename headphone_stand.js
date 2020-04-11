@@ -37,7 +37,9 @@ function main() {
  
     const standBody = union([
        cube({size:[20,70,20], center:[true,false,false]}),
-       translate([-10,0,0],cube({size:[5,70,23]}))
+       translate([-10,0,0],cube({size:[5,70,23]})),
+       translate([-10,0,23],rotate([-10,0,0],cube({size:[5,20,3.5]}))),
+       translate([-10,63.2,19.8],rotate([25,0,0],cube({size:[5,7.5,3.5]}))),
     ]);
     const stand = difference([
        standBody,
@@ -52,15 +54,18 @@ function main() {
     
     const fullBase =  union([
         translate([-75,0,0],rotate([0,0,-10],center([true,true,false],stand))),
-        translate([75,0,0],rotate([0,0,190],center([true,true,false],standBody))),
+        translate([75,0,0],rotate([0,0,190],center([true,true,false],mirror([0,1,0],standBody)))),
         baseBeam,
         mirror([1,0,0],baseBeam)
         ]);
     
     
-    return union(
-        fullBase, 
-        translate([0,-30,0],rotate([0,0,90],center([true,true,false],plugCoverWithHoles)))
-    );
+    
+    return stand;
+    
+    // return union(
+    //     fullBase, 
+    //     translate([0,-30,0],rotate([0,0,90],center([true,true,false],plugCoverWithHoles)))
+    // );
     
 }
