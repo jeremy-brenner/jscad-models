@@ -1,4 +1,4 @@
-const heigth = 50;
+const height = 50;
 const thickness = 2;
 
 function main() {

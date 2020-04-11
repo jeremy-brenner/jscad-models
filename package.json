@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/jeremy-brenner/jscad-models#readme",
   "dependencies": {
+    "@jscad/cli": "^1.10.0",
     "glob": "^7.1.6",
+    "mkdirp": "^1.0.4",
     "node-watch": "^0.6.3"
   }
 }

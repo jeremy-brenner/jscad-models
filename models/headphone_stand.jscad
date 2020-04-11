@@ -1,5 +1,6 @@
 
 
+
 function main() {
     const screwHole = union([
         cylinder({d:2.9,h:10}),
@@ -34,12 +35,16 @@ function main() {
         
          ]);
          
+    const cradleRail = union([
+        translate([0,0,20],cube({size:[5,70,3]})),
+       translate([0,0,23],rotate([-10,0,0],cube({size:[5,20,3.5]}))),
+       translate([0,63.2,19.8],rotate([25,0,0],cube({size:[5,7.5,3.5]}))),
+ ]);
  
     const standBody = union([
        cube({size:[20,70,20], center:[true,false,false]}),
-       translate([-10,0,0],cube({size:[5,70,23]})),
-       translate([-10,0,23],rotate([-10,0,0],cube({size:[5,20,3.5]}))),
-       translate([-10,63.2,19.8],rotate([25,0,0],cube({size:[5,7.5,3.5]}))),
+       translate([-10,0,0],cradleRail),
+       translate([5,0,-1.5],cradleRail)
     ]);
     const stand = difference([
        standBody,
@@ -61,11 +66,9 @@ function main() {
     
     
     
-    return stand;
-    
-    // return union(
-    //     fullBase, 
-    //     translate([0,-30,0],rotate([0,0,90],center([true,true,false],plugCoverWithHoles)))
-    // );
+
+
+       return fullBase;
+       //return plugCoverWithHoles;
     
 }

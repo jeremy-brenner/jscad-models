@@ -49,8 +49,8 @@
             }
 
     function main () {
-            return union(
-                    //  translate([0,(pw+ww)*cy+ww*5,0],box()),
-              //          lid()
-              //                );
-              //                    }
+        return union(
+            translate([0,(pw+ww)*cy+ww*5,0],box()),
+            lid()
+        );
+    }
