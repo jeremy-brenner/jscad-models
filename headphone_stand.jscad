@@ -43,8 +43,7 @@ function main() {
  
     const standBody = union([
        cube({size:[20,70,20], center:[true,false,false]}),
-       translate([-10,0,0],cradleRail),
-       translate([5,0,-1.5],cradleRail)
+       translate([-10,0,0],cradleRail)
     ]);
     const stand = difference([
        standBody,
@@ -63,12 +62,7 @@ function main() {
         baseBeam,
         mirror([1,0,0],baseBeam)
         ]);
-    
-    
-    
 
-
-       return fullBase;
-       //return plugCoverWithHoles;
-    
+     return fullBase;
+ //      return plugCoverWithHoles;   
 }

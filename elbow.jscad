@@ -7,5 +7,5 @@ function elbow(opts) {
 }
    
 function main () {
- return elbow({r:0.5, fb: 30});
+  return elbow({r:0.5, fb: 30});
 }
