@@ -44,7 +44,12 @@ function smallSupports(sl,sw,h) {
     const rotation = (sl > 0) ? 0 : 90;
     const offsetY = (sl > 0) ? unitW/2 : -unitW/2;
     const supportH = h*unitH;
-    const support = cylinder({r,h:supportH});
+    const support = union(
+        [
+            cylinder({r,h:supportH}),
+            (h>1) ? translate([-0.25,-unitW/2,studH],cube({size:[0.5,unitW,h*unitH-studH]})): undefined
+        ].filter(o=>o)
+    );
     return rotate([0,0,rotation],union(seq(c).map(x => translate([(x+1)*unitW,offsetY,0],support))))
 }
 
@@ -52,13 +57,20 @@ function largeSupports(sl,sw,h) {
     let r = 3.25;
     let t = 0.5;
     const supportH = h*unitH;
-    const support = difference(
+    const support = union(
         cylinder({r,h:supportH}),
-        cylinder({r:r-t,h:supportH})
-    );
+        translate([-0.25,-unitW,studH],cube({size:[0.5,unitW*2,h*unitH-studH]})),
+        translate([-unitW,-0.25,studH],cube({size:[unitW*2,0.5,h*unitH-studH]}))
+    )
+    const supportHole = cylinder({r:r-t,h:supportH});
 
     const supportRow = union(seq(sl).map(x => translate([(x+1)*unitW,0,0],support)));
-    return union(seq(sw).map( y => translate([0,(y+1)*unitW,0], supportRow)));
+    const supportGrid = union(seq(sw).map( y => translate([0,(y+1)*unitW,0], supportRow)));
+
+    const holeRow = union(seq(sl).map(x => translate([(x+1)*unitW,0,0],supportHole)));
+    const holeGrid = union(seq(sw).map( y => translate([0,(y+1)*unitW,0], holeRow)));
+
+    return difference(supportGrid,holeGrid);
 }
 
 function studs(l,w) {
