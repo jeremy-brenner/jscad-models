@@ -1,22 +1,23 @@
 const unitH = 3.16;
 const unitW = 8;
-const pegR = 2.5;
-const pegH = 2;
+const studR = 2.5;
+const studH = 2;
 
 function getParameterDefinitions() {
     return [
-        { name: 'l', type: 'int', initial: 4, caption: "Block length:" },
-        { name: 'w', type: 'int', initial: 2, caption: "Block width:" },
-        { name: 'h', type: 'int', initial: 3, caption: "Block height:" }
+        { name: 's', type: 'checkbox', checked: true, caption: 'Studs:' },
+        { name: 'l', type: 'int', initial: 4, caption: "Length:" },
+        { name: 'w', type: 'int', initial: 2, caption: "Width:" },
+        { name: 'h', type: 'int', initial: 3, caption: "Height:" }
     ];
 }
 
-function main({l,w,h}) {
+function main({l,w,h,s}) {
     const brickL = unitW*l;
     const brickW = unitW*w;
     const brickH = unitH*h;
     
-    const holeDiff = ( unitW - pegR*2 );
+    const holeDiff = ( unitW - studR*2 );
     const holeL = brickL - holeDiff;
     const holeW = brickW - holeDiff;
     const holeH = brickH - 1;
@@ -26,11 +27,11 @@ function main({l,w,h}) {
         translate([holeDiff/2,holeDiff/2,0],cube({size:[holeL,holeW,holeH]}))
     );
 
-    const _pegs = translate([0,0,brickH],pegs(l,w));
+    const _studs = (s) ? translate([0,0,brickH],studs(l,w)): undefined;
 
     const _supports = (l > 1 || w > 1) ? supports(l-1,w-1,h) : undefined
     
-    return union([block,_pegs,_supports].filter(p=>p));
+    return union([block,_studs,_supports].filter(p=>p));
 }
 
 function supports(sl,sw,h) {
@@ -60,15 +61,15 @@ function largeSupports(sl,sw,h) {
     return union(seq(sw).map( y => translate([0,(y+1)*unitW,0], supportRow)));
 }
 
-function pegs(l,w) {
-    const peg = cylinder({r:pegR,h:pegH});
-    const pegRow = union(seq(l).map(x => translate([pegOffset(x),0,0],peg)));
-    return union(seq(w).map( y => translate([0,pegOffset(y),0], pegRow)));
+function studs(l,w) {
+    const stud = cylinder({r:studR,h:studH});
+    const studRow = union(seq(l).map(x => translate([studOffset(x),0,0],stud)));
+    return union(seq(w).map( y => translate([0,studOffset(y),0], studRow)));
 }
 
-function pegOffset(n) {
-    const pegO = unitW/2;
-    return unitW * n + pegO;
+function studOffset(n) {
+    const studO = unitW/2;
+    return unitW * n + studO;
 }
 
 function seq(length) {
