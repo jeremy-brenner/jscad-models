@@ -3,6 +3,12 @@ const unitW = 8;
 const studR = 2.5;
 const studH = 2;
 
+const smallSupportR = 1.5;
+const supportBarT = 0.5;
+
+const largeSupportR = 3.25;
+const largeSupportT = 0.5;
+
 function getParameterDefinitions() {
     return [
         { name: 's', type: 'checkbox', checked: true, caption: 'Studs:' },
@@ -39,30 +45,27 @@ function supports(sl,sw,h) {
 }
 
 function smallSupports(sl,sw,h) {
-    let r = 1.5;
     const c = (sl > 0) ? sl : sw;
     const rotation = (sl > 0) ? 0 : 90;
     const offsetY = (sl > 0) ? unitW/2 : -unitW/2;
     const supportH = h*unitH;
     const support = union(
         [
-            cylinder({r,h:supportH}),
-            (h>1) ? translate([-0.25,-unitW/2,studH],cube({size:[0.5,unitW,h*unitH-studH]})): undefined
+            cylinder({r:smallSupportR,h:supportH}),
+            (h>1) ? translate([-supportBarT/2,-unitW/2,studH],cube({size:[supportBarT,unitW,h*unitH-studH]})): undefined
         ].filter(o=>o)
     );
     return rotate([0,0,rotation],union(seq(c).map(x => translate([(x+1)*unitW,offsetY,0],support))))
 }
 
 function largeSupports(sl,sw,h) {
-    let r = 3.25;
-    let t = 0.5;
     const supportH = h*unitH;
     const support = union(
-        cylinder({r,h:supportH}),
-        translate([-0.25,-unitW,studH],cube({size:[0.5,unitW*2,h*unitH-studH]})),
-        translate([-unitW,-0.25,studH],cube({size:[unitW*2,0.5,h*unitH-studH]}))
+        cylinder({r:largeSupportR,h:supportH}),
+        translate([-supportBarT/2,-unitW,studH],cube({size:[supportBarT,unitW*2,h*unitH-studH]})),
+        translate([-unitW,-supportBarT/2,studH],cube({size:[unitW*2,supportBarT,h*unitH-studH]}))
     )
-    const supportHole = cylinder({r:r-t,h:supportH});
+    const supportHole = cylinder({r:largeSupportR-largeSupportT,h:supportH});
 
     return translate([unitW,unitW,0],
         difference(
@@ -80,11 +83,6 @@ function gridOf(object,xl,yl) {
 function studs(l,w) {
     const stud = cylinder({r:studR,h:studH});
     return translate([unitW/2,unitW/2,0],gridOf(stud,l,w));
-}
-
-function studOffset(n) {
-    const studO = unitW/2;
-    return unitW * n + studO;
 }
 
 function seq(length) {
