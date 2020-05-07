@@ -1,5 +1,8 @@
 const unitH = 3.16;
 const unitW = 8;
+const wallT = 1.55;
+const ceilT = 1;
+
 const studR = 2.5;
 const studH = 2;
 
@@ -8,6 +11,8 @@ const supportBarT = 0.5;
 
 const largeSupportR = 3.25;
 const largeSupportT = 0.5;
+
+const barOffset = unitH-ceilT;
 
 function getParameterDefinitions() {
     return [
@@ -23,49 +28,47 @@ function main({l,w,h,s}) {
     const brickW = unitW*w;
     const brickH = unitH*h;
     
-    const holeDiff = ( unitW - studR*2 );
-    const holeL = brickL - holeDiff;
-    const holeW = brickW - holeDiff;
-    const holeH = brickH - 1;
+    const holeL = brickL - wallT*2;
+    const holeW = brickW - wallT*2;
+    const holeH = brickH - ceilT;
 
     const block = difference( 
         cube({size:[brickL,brickW,brickH]}),
-        translate([holeDiff/2,holeDiff/2,0],cube({size:[holeL,holeW,holeH]}))
+        translate([wallT,wallT,0],cube({size:[holeL,holeW,holeH]}))
     );
 
     const _studs = (s) ? translate([0,0,brickH],studs(l,w)): undefined;
 
-    const _supports = (l > 1 || w > 1) ? supports(l-1,w-1,h) : undefined
+    const _supports = (l > 1 || w > 1) ? supports(l-1,w-1,brickH) : undefined
     
     return union([block,_studs,_supports].filter(p=>p));
 }
 
-function supports(sl,sw,h) {
-    return (sl > 0 && sw > 0) ? largeSupports(sl,sw,h) : smallSupports(sl,sw,h);
+function supports(sl,sw,sh) {
+    return (sl > 0 && sw > 0) ? largeSupports(sl,sw,sh) : smallSupports(sl,sw,sh);
 }
 
-function smallSupports(sl,sw,h) {
+function smallSupports(sl,sw,sh) {
     const c = (sl > 0) ? sl : sw;
     const rotation = (sl > 0) ? 0 : 90;
     const offsetY = (sl > 0) ? unitW/2 : -unitW/2;
-    const supportH = h*unitH;
+    const barH = sh-barOffset;
+
     const support = union(
-        [
-            cylinder({r:smallSupportR,h:supportH}),
-            (h>1) ? translate([-supportBarT/2,-unitW/2,studH],cube({size:[supportBarT,unitW,h*unitH-studH]})): undefined
-        ].filter(o=>o)
+        cylinder({r:smallSupportR,h:sh}),
+        translate([-supportBarT/2,-unitW/2,barOffset],cube({size:[supportBarT,unitW,barH]}))
     );
     return rotate([0,0,rotation],union(seq(c).map(x => translate([(x+1)*unitW,offsetY,0],support))))
 }
 
-function largeSupports(sl,sw,h) {
-    const supportH = h*unitH;
+function largeSupports(sl,sw,sh) {
+    const barH = sh-barOffset;
     const support = union(
-        cylinder({r:largeSupportR,h:supportH}),
-        translate([-supportBarT/2,-unitW,studH],cube({size:[supportBarT,unitW*2,h*unitH-studH]})),
-        translate([-unitW,-supportBarT/2,studH],cube({size:[unitW*2,supportBarT,h*unitH-studH]}))
+        cylinder({r:largeSupportR,h:sh}),
+        translate([-supportBarT/2,-unitW,barOffset],cube({size:[supportBarT,unitW*2,barH]})),
+        translate([-unitW,-supportBarT/2,barOffset],cube({size:[unitW*2,supportBarT,barH]}))
     )
-    const supportHole = cylinder({r:largeSupportR-largeSupportT,h:supportH});
+    const supportHole = cylinder({r:largeSupportR-largeSupportT,h:sh});
 
     return translate([unitW,unitW,0],
         difference(
