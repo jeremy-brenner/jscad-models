@@ -64,21 +64,22 @@ function largeSupports(sl,sw,h) {
     )
     const supportHole = cylinder({r:r-t,h:supportH});
 
-    return difference(
-        gridOf(sl,sw,support),
-        gridOf(sl,sw,supportHole)
+    return translate([unitW,unitW,0],
+        difference(
+            gridOf(support,sl,sw),
+            gridOf(supportHole,sl,sw)
+        )
     );
 }
 
-function gridOf(xl,yl,object) {
-    const objectRow = union(seq(xl).map(x => translate([(x+1)*unitW,0,0],object)));
-    return union(seq(yl).map( y => translate([0,(y+1)*unitW,0], objectRow)));
+function gridOf(object,xl,yl) {
+    const objectRow = union(seq(xl).map(x => translate([x*unitW,0,0],object)));
+    return union(seq(yl).map( y => translate([0,y*unitW,0], objectRow)));
 }
 
 function studs(l,w) {
     const stud = cylinder({r:studR,h:studH});
-    const studRow = union(seq(l).map(x => translate([studOffset(x),0,0],stud)));
-    return union(seq(w).map( y => translate([0,studOffset(y),0], studRow)));
+    return translate([unitW/2,unitW/2,0],gridOf(stud,l,w));
 }
 
 function studOffset(n) {
