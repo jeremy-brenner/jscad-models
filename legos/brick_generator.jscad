@@ -3,11 +3,15 @@ const unitW = 8;
 const pegR = 2.5;
 const pegH = 2;
 
-function main() {
-  return brick(2,1,1);
+function getParameterDefinitions() {
+    return [
+        { name: 'l', type: 'int', initial: 4, caption: "Block length:" },
+        { name: 'w', type: 'int', initial: 2, caption: "Block width:" },
+        { name: 'h', type: 'int', initial: 3, caption: "Block height:" }
+    ];
 }
 
-function brick(l,w,h) {
+function main({l,w,h}) {
     const brickL = unitW*l;
     const brickW = unitW*w;
     const brickH = unitH*h;
@@ -17,43 +21,35 @@ function brick(l,w,h) {
     const holeW = brickW - holeDiff;
     const holeH = brickH - 1;
 
-    const brickParts = {};
-    
-    brickParts.block = difference( 
+    const block = difference( 
         cube({size:[brickL,brickW,brickH]}),
         translate([holeDiff/2,holeDiff/2,0],cube({size:[holeL,holeW,holeH]}))
     );
-  
-    brickParts.pegs = translate([0,0,brickH],pegs(l,w));
 
-    if(l>1||w>1) {
-        brickParts.supports = supports(l-1,w-1,h);
-    }
+    const _pegs = translate([0,0,brickH],pegs(l,w));
 
-    return union(Object.values(brickParts));
+    const _supports = (l > 1 || w > 1) ? supports(l-1,w-1,h) : undefined
+    
+    return union([block,_pegs,_supports].filter(p=>p));
 }
 
 function supports(sl,sw,h) {
-    if(sl>0&&sw>0) {
-        return largeSupports(sl,sw,h);
-    }else{
-        return smallSupports(sl,sw,h);
-    }
+    return (sl > 0 && sw > 0) ? largeSupports(sl,sw,h) : smallSupports(sl,sw,h);
 }
 
 function smallSupports(sl,sw,h) {
-    r=1.5
-    const c = (sl>0) ? sl : sw;
-    const rotation = (sl>0) ? 0 : 90;
-    const offsetY = (sl>0) ? unitW/2 : -unitW/2;
+    let r = 1.5;
+    const c = (sl > 0) ? sl : sw;
+    const rotation = (sl > 0) ? 0 : 90;
+    const offsetY = (sl > 0) ? unitW/2 : -unitW/2;
     const supportH = h*unitH;
     const support = cylinder({r,h:supportH});
     return rotate([0,0,rotation],union(seq(c).map(x => translate([(x+1)*unitW,offsetY,0],support))))
 }
 
 function largeSupports(sl,sw,h) {
-    r=3.25
-    t=0.5
+    let r = 3.25;
+    let t = 0.5;
     const supportH = h*unitH;
     const support = difference(
         cylinder({r,h:supportH}),
