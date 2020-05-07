@@ -64,13 +64,15 @@ function largeSupports(sl,sw,h) {
     )
     const supportHole = cylinder({r:r-t,h:supportH});
 
-    const supportRow = union(seq(sl).map(x => translate([(x+1)*unitW,0,0],support)));
-    const supportGrid = union(seq(sw).map( y => translate([0,(y+1)*unitW,0], supportRow)));
+    return difference(
+        gridOf(sl,sw,support),
+        gridOf(sl,sw,supportHole)
+    );
+}
 
-    const holeRow = union(seq(sl).map(x => translate([(x+1)*unitW,0,0],supportHole)));
-    const holeGrid = union(seq(sw).map( y => translate([0,(y+1)*unitW,0], holeRow)));
-
-    return difference(supportGrid,holeGrid);
+function gridOf(xl,yl,object) {
+    const objectRow = union(seq(xl).map(x => translate([(x+1)*unitW,0,0],object)));
+    return union(seq(yl).map( y => translate([0,(y+1)*unitW,0], objectRow)));
 }
 
 function studs(l,w) {
