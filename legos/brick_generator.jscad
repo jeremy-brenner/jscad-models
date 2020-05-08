@@ -9,8 +9,7 @@ const studH = 2;
 const smallSupportR = 1.5;
 const supportBarT = 0.5;
 
-const largeSupportR = 3.25;
-const largeSupportT = 0.5;
+const largeSupportR = 3;
 
 const barOffset = unitH-ceilT;
 
@@ -68,7 +67,7 @@ function largeSupports(sl,sw,sh) {
         translate([-supportBarT/2,-unitW,barOffset],cube({size:[supportBarT,unitW*2,barH]})),
         translate([-unitW,-supportBarT/2,barOffset],cube({size:[unitW*2,supportBarT,barH]}))
     )
-    const supportHole = cylinder({r:largeSupportR-largeSupportT,h:sh});
+    const supportHole = cylinder({r:studR,h:sh});
 
     return translate([unitW,unitW,0],
         difference(
