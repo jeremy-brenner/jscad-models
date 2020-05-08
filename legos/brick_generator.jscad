@@ -3,8 +3,8 @@ const unitW = 8;
 const wallT = 1.5;
 const ceilT = 1;
 
-const bottomBevelH = 2.5;
-const bottomBevelT = 1;
+const bottomBevelH = 2.25;
+const bottomBevelT = 0.8;
 
 const studR = 2.5;
 const studH = 2;
@@ -48,12 +48,14 @@ function main({l,w,h,studStyle,shape,holesUnderStuds,bottomBevel}) {
         hullSubtractors.push(translate([0,0,brickH],studs(l,w,studHoleR)));
     }
     
-    const bb = difference(
-        block(brickL,brickW,bottomBevelH,shape),
-        translate([bottomBevelT,bottomBevelT,0], block(brickL-bottomBevelT*2,brickW-bottomBevelT*2,bottomBevelH,shape))
-    );
-
-    hullSubtractors.push(bb);
+    if(bottomBevel) {
+        hullSubtractors.push(
+            difference(
+                block(brickL,brickW,bottomBevelH,shape),
+                translate([bottomBevelT,bottomBevelT,0], block(brickL-bottomBevelT*2,brickW-bottomBevelT*2,bottomBevelH,shape))
+            )
+        );
+    }
 
     const _hull = difference(
         block(brickL,brickW,brickH+studH,shape),
