@@ -8,17 +8,10 @@ function main() {
     const plate = cube({size:[w,l,z], center: [true,true,false]});
    
     const postH = 2.2;
-    const shaft = cylinder({r:3.1,h:postH});
-    const bevel = cylinder({r1:3.1,r2:3.5,h:0.9});
-    const hole = cylinder({r:1.5,h:postH});
-
-    const slit = cube({size:[10,1,postH], center: [true,true,false]});
-    const post = difference(
-        union(shaft,bevel),
-        hole,
-        slit,
-        rotate([0,0,90],slit)
-    )
+    const shaft = cylinder({r:3,h:postH});
+    const bevel = cylinder({r1:3,r2:3.4,h:0.9});
+    const post = union(shaft,bevel);
+    
     const postPositioned = translate([0,0,postH+z],rotate([180,0,0],post));
 
     const clipHole = union(
@@ -29,14 +22,21 @@ function main() {
 
     const ridge = translate([6.5,0,0],intersection(cube({size:[3,3,1.25], center:[true,true,false]}),sphere({r:1.25, fn:4*quality})));
     const ridgeCount = 24;
-    const ridges = translate([0,0,z-0.5],union( seq(ridgeCount).map( i => rotate([0,0,i*360/ridgeCount], ridge) ) ));
+    const ridges = translate([0,0,z-0.25],union( seq(ridgeCount).map( i => rotate([0,0,i*360/ridgeCount], ridge) ) ));
 
     const levelPlateClip = union(plate, postPositioned);
 
     const levelPlateClipWithRidges = union(levelPlateClip,ridges)
 
+    const hole = cylinder({r:1.5,h:z+postH});
+    const slit = cube({size:[10,1,z+postH], center: [true,true,false]});
+    const indent = cylinder({r:5,h:z-1});
     return difference(
         levelPlateClipWithRidges,
+        hole,
+        slit,
+        indent,
+        rotate([0,0,90], slit),
         translate([0,-16.125,0],clipHole),
         translate([0,16.125,0],rotate([0,0,180],clipHole))
     );

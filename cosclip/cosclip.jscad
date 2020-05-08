@@ -76,13 +76,11 @@ function main() {
     )
     const insideSide = union( translate([10+(10-h)/2,0,0],insideHinge), spike_grid, sidePiece, translate([0,l,0],insideLock));
 
-
     return union(
         translate([35,0,0],outsideSideRidged),
         insideSide
     );
-
-    
+     
 }
 
 function seq(length) {
