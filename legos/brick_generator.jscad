@@ -32,24 +32,38 @@ function main({l,w,h,s,round}) {
     const holeW = brickW - wallT*2;
     const holeH = brickH - ceilT;
 
-    const block = difference( 
-        cube({size:[brickL,brickW,brickH]}),
-        translate([wallT,wallT,0],cube({size:[holeL,holeW,holeH]}))
+    const _hull = difference(
+        block(brickL,brickW,brickH+studH,round),
+        studs(l,w)
+    );
+
+    const _block = difference(
+        block(brickL,brickW,brickH,round),
+        translate([wallT,wallT,0],block(holeL,holeW,holeH,round))
     );
 
     const _studs = (s) ? translate([0,0,brickH],studs(l,w)): undefined;
 
     const _supports = (l > 1 || w > 1) ? supports(l-1,w-1,brickH) : undefined
     
-    const brick = union([block,_studs,_supports].filter(p=>p));
-    if(round) {
-        const largestD = (brickL>brickW) ? brickL : brickW;
-        return intersection(
-            brick,
-            translate([brickL/2,brickW/2,0],cylinder({r:largestD/2, h:brickH+studH}))
-        );
-    }
+    const brick = intersection(
+        union([_block,_studs,_supports].filter(p=>p)),
+        _hull
+    );
+
     return brick;
+}
+
+function block(l,w,h,round) {
+    const largestD = (l>w) ? l : w;
+    const baseBlock = cube({size:[l,w,h]});
+    if(round) {
+        return intersection(
+            translate([l/2,w/2,0],cylinder({r:largestD/2, h})),
+            baseBlock
+        )
+    }
+    return baseBlock;
 }
 
 function supports(sl,sw,sh) {
