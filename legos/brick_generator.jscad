@@ -3,8 +3,12 @@ const unitW = 8;
 const wallT = 1.5;
 const ceilT = 1;
 
+const bottomBevelH = 2.5;
+const bottomBevelT = 1;
+
 const studR = 2.5;
 const studH = 2;
+const studHoleR = 1.625;
 
 const smallSupportR = 1.5;
 const supportBarT = 0.5;
@@ -15,15 +19,17 @@ const barOffset = unitH-ceilT;
 
 function getParameterDefinitions() {
     return [
-        { name: 's', type: 'checkbox', checked: true, caption: 'Studs:' },
         { name: 'l', type: 'int', initial: 4, caption: "Length:" },
         { name: 'w', type: 'int', initial: 2, caption: "Width:" },
         { name: 'h', type: 'int', initial: 3, caption: "Height:" },
-        { name: 'round', type:'checkbox', checked: false, caption: 'Round:'}
+        { name: 'studStyle', type: 'choice', values: ['normal', 'open', 'none'], captions: ['Normal', 'Open', 'None'], initial: 'normal', caption: 'Studs:'},
+        { name: 'holesUnderStuds', type: 'checkbox', checked: false, caption: 'Holes under studs:' },
+        { name: 'shape', type: 'choice', values: ['square', 'round', 'quarter'], captions: ['Square', 'Round', 'Quarter Round'], initial: 'square', caption: 'Shape:'},
+        { name: 'bottomBevel', type: 'checkbox', checked: false, caption: 'Bottom bevel:' },
     ];
 }
 
-function main({l,w,h,s,round}) {
+function main({l,w,h,studStyle,shape,holesUnderStuds,bottomBevel}) {
     const brickL = unitW*l;
     const brickW = unitW*w;
     const brickH = unitH*h;
@@ -32,17 +38,34 @@ function main({l,w,h,s,round}) {
     const holeW = brickW - wallT*2;
     const holeH = brickH - ceilT;
 
+    const hullSubtractors = [studs(l,w)];
+ 
+    if(holesUnderStuds) {
+        hullSubtractors.push(translate([0,0,holeH],studs(l,w,studHoleR,ceilT)));
+    }
+
+    if(studStyle =='open') {
+        hullSubtractors.push(translate([0,0,brickH],studs(l,w,studHoleR)));
+    }
+    
+    const bb = difference(
+        block(brickL,brickW,bottomBevelH,shape),
+        translate([bottomBevelT,bottomBevelT,0], block(brickL-bottomBevelT*2,brickW-bottomBevelT*2,bottomBevelH,shape))
+    );
+
+    hullSubtractors.push(bb);
+
     const _hull = difference(
-        block(brickL,brickW,brickH+studH,round),
-        studs(l,w)
+        block(brickL,brickW,brickH+studH,shape),
+        ...hullSubtractors    
     );
 
     const _block = difference(
-        block(brickL,brickW,brickH,round),
-        translate([wallT,wallT,0],block(holeL,holeW,holeH,round))
+        block(brickL,brickW,brickH,shape),
+        translate([wallT,wallT,0],block(holeL,holeW,holeH,shape))
     );
 
-    const _studs = (s) ? translate([0,0,brickH],studs(l,w)): undefined;
+    const _studs = (studStyle != 'none') ? translate([0,0,brickH],studs(l,w)): undefined;
 
     const _supports = (l > 1 || w > 1) ? supports(l-1,w-1,brickH) : undefined
     
@@ -54,12 +77,20 @@ function main({l,w,h,s,round}) {
     return brick;
 }
 
-function block(l,w,h,round) {
+function block(l,w,h,shape) {
     const largestD = (l>w) ? l : w;
     const baseBlock = cube({size:[l,w,h]});
-    if(round) {
+    
+    if(shape=='round') {
         return intersection(
             translate([l/2,w/2,0],cylinder({r:largestD/2, h})),
+            baseBlock
+        )
+    }
+
+    if(shape=='quarter') {
+        return intersection(
+            cylinder({r:largestD, h}),
             baseBlock
         )
     }
@@ -105,8 +136,8 @@ function gridOf(object,xl,yl) {
     return union(seq(yl).map( y => translate([0,y*unitW,0], objectRow)));
 }
 
-function studs(l,w) {
-    const stud = cylinder({r:studR,h:studH});
+function studs(l,w,r = studR, h = studH) {
+    const stud = cylinder({r,h});
     return translate([unitW/2,unitW/2,0],gridOf(stud,l,w));
 }
 
