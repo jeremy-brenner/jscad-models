@@ -3,12 +3,15 @@ const unitW = 8;
 const wallT = 1.5;
 const ceilT = 1;
 
+const blockRoundingR = 0.5;
+
 const bottomBevelH = 2.25;
 const bottomBevelT = 0.8;
 
 const studR = 2.5;
 const studH = 2;
 const studHoleR = 1.625;
+const studRoundingR = 0.5;
 
 const smallSupportR = 1.5;
 const supportBarT = 0.5;
@@ -37,7 +40,7 @@ function main({l,w,h,studStyle,shape,holesUnderStuds,bottomBevel}) {
     const holeL = brickL - wallT*2;
     const holeW = brickW - wallT*2;
     const holeH = brickH - ceilT;
-
+ 
     const hullSubtractors = [studs(l,w)];
  
     if(holesUnderStuds) {
@@ -63,7 +66,7 @@ function main({l,w,h,studStyle,shape,holesUnderStuds,bottomBevel}) {
     );
 
     const _block = difference(
-        block(brickL,brickW,brickH,shape),
+        block(brickL,brickW,brickH,shape,true),
         translate([wallT,wallT,0],block(holeL,holeW,holeH,shape))
     );
 
@@ -79,9 +82,11 @@ function main({l,w,h,studStyle,shape,holesUnderStuds,bottomBevel}) {
     return brick;
 }
 
-function block(l,w,h,shape) {
+function block(l,w,h,shape,rounded=false) {
     const largestD = (l>w) ? l : w;
-    const baseBlock = cube({size:[l,w,h]});
+    const baseBlock = rounded ? 
+        translate([l/2,w/2,h/2],CSG.roundedCube({radius: [l/2, w/2, h/2], roundradius: blockRoundingR, resolution: 16})) :
+        cube({size:[l,w,h]});
     
     if(shape=='round') {
         return intersection(
@@ -111,7 +116,7 @@ function smallSupports(sl,sw,sh) {
 
     const support = union(
         cylinder({r:smallSupportR,h:sh}),
-        translate([-supportBarT/2,-unitW/2,barOffset],cube({size:[supportBarT,unitW,barH]}))
+        translate([-supportBarT/2,-unitW/2+wallT,barOffset],cube({size:[supportBarT,unitW-wallT*2,barH]}))
     );
     return rotate([0,0,rotation],union(seq(c).map(x => translate([(x+1)*unitW,offsetY,0],support))))
 }
@@ -120,8 +125,8 @@ function largeSupports(sl,sw,sh) {
     const barH = sh-barOffset;
     const support = union(
         cylinder({r:largeSupportR,h:sh}),
-        translate([-supportBarT/2,-unitW,barOffset],cube({size:[supportBarT,unitW*2,barH]})),
-        translate([-unitW,-supportBarT/2,barOffset],cube({size:[unitW*2,supportBarT,barH]}))
+        translate([-supportBarT/2,-unitW+wallT,barOffset],cube({size:[supportBarT,(unitW-wallT)*2,barH]})),
+        translate([-unitW+wallT,-supportBarT/2,barOffset],cube({size:[(unitW-wallT)*2,supportBarT,barH]}))
     )
     const supportHole = cylinder({r:studR,h:sh});
 
