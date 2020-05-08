@@ -1,6 +1,6 @@
 const unitH = 3.16;
 const unitW = 8;
-const wallT = 1.55;
+const wallT = 1.5;
 const ceilT = 1;
 
 const studR = 2.5;
