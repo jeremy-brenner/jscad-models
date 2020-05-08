@@ -9,7 +9,7 @@ const studH = 2;
 const smallSupportR = 1.5;
 const supportBarT = 0.5;
 
-const largeSupportR = 3;
+const largeSupportR = 3.25;
 
 const barOffset = unitH-ceilT;
 
