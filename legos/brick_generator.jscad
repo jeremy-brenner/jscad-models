@@ -1,5 +1,5 @@
 const unitH = 3.16;
-const unitW = 8;
+const unitW = 7.97;
 const wallT = 1.5;
 const ceilT = 1;
 
