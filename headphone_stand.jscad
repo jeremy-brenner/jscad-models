@@ -1,7 +1,14 @@
 
 
+function getParameterDefinitions() {
+    return [
+        { name: 'renderBase', type: 'checkbox', checked: true, caption: 'Render base:' },
+        { name: 'renderPlugCover', type: 'checkbox', checked: true, caption: 'Render plug cover:' },
+    ];
+}
 
-function main() {
+
+function main({renderBase, renderPlugCover}) {
     const screwHole = union([
         cylinder({d:2.9,h:10}),
         cylinder({d:3.5,h:4}),
@@ -13,9 +20,6 @@ function main() {
         cube({size:[10,50,4], center:[true,false,false]}),
         translate([0,10,0],cube({size:[5,3,7], center:[true,false,false]}))
         ]);
-        
-                
-             
         
     const plugCoverWithHoles = difference([
         plugCover,
@@ -63,6 +67,14 @@ function main() {
         mirror([1,0,0],baseBeam)
         ]);
 
-     return fullBase;
- //      return plugCoverWithHoles;   
+    const renderables = [];
+    if(renderBase) {
+        renderables.push(fullBase);
+    }
+
+    if(renderPlugCover) {
+        renderables.push(translate([25,25,0],rotate([0,0,90],plugCoverWithHoles)));
+    }
+
+    return union(renderables);   
 }
