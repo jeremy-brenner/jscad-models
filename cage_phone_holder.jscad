@@ -1,4 +1,11 @@
-function main() {
+function getParameterDefinitions() {
+    return [
+        { name: 'renderHolder', type: 'checkbox', checked: true, caption: 'Render holder:' },
+        { name: 'renderPlugCover', type: 'checkbox', checked: true, caption: 'Render plug cover:' },
+    ];
+}
+
+function main({renderHolder,renderPlugCover}) {
     const hook = intersection(
         difference(
             union(
@@ -38,8 +45,8 @@ function main() {
               ]))
          ]);
 
-    const plugHoleTransformed = translate([20,-43.5,-8],rotate([90,90,180],center([true,true,false],plugHole)));
-    const plugCoverHole = translate([10,-49.5,-8],
+    const plugHoleTransformed = translate([20,-42.5,-8],rotate([90,90,180],center([true,true,false],plugHole)));
+    const plugCoverHole = translate([10,-48.5,-8],
         rotate([90,90,180],
             center([true,true,false],
                 union(
@@ -59,21 +66,25 @@ function main() {
         translate([-39,-30,-2],cube([78,85,2])),
 
         //bottom
-        translate([-39,-49.5,-16],cube([78,19.5,16])),
+        translate([-39,-48.5,-16],cube([78,18.5,16])),
         translate([-39,-30,-16],cube([78,5,2])),
 
         //right
-        translate([-41,-49.5,-16],cube([2,104.5,16])),
+        translate([-41,-48.5,-16],cube([2,103.5,16])),
         translate([-39,-30,-16],cube([5,85,2])),
 
         //left
-        translate([39,-49.5,-16],cube([2,104.5,16])),
+        translate([39,-48.5,-16],cube([2,103.5,16])),
         translate([34,-30,-16],cube([5,85,2]))
     );
 
+    const allModels = [];
+    if(renderHolder) {
+        allModels.push(difference(stand,plugHoleTransformed,plugCoverHole));
+    }
+    if(renderPlugCover) {
+        allModels.push(translate([60,-49.5,0],rotate([-90,180,0],plugCoverWithHoles)))
+    }
 
-    return union(
-        difference(stand,plugHoleTransformed,plugCoverHole).mirroredX(),
-        translate([60,-49.5,0],rotate([-90,180,0],plugCoverWithHoles))
-    );
+    return union(allModels);
 }
