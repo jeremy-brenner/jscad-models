@@ -1,15 +1,6 @@
-function main() {
-    const hook = intersection(
-        difference(
-            union(
-                cylinder({r:6, h:4}),
-                translate([0,0,4],cylinder({r:7.5, h:2}))
-            ),
-            cylinder({r:3,h:6})
-        ),
-        translate([-7.5,-7.5,0],cube({size:[15,7.5,8]}))
-    );
+include('hook.jscad');
 
+function main() {
     const bigHook = difference(
         union(
             cylinder({r:8, h:20}),
@@ -28,7 +19,7 @@ function main() {
     );
 
     const models = [];
-    models.push(rotate([180,0,0],hook));
+    models.push(rotate([180,0,0],hook()));
     models.push(plate);
     models.push(translate([0,40,2],bigHook));
 

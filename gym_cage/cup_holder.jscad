@@ -1,15 +1,7 @@
+include('hook.jscad');
 
 function main() {
-    const hook = intersection(
-        difference(
-            union(
-                cylinder({r:6, h:4}),
-                translate([0,0,4],cylinder({r:7.5, h:2}))
-            ),
-            cylinder({r:4,h:6})
-        ),
-        translate([-7.5,-7.5,0],cube({size:[15,7.5,8]}))
-    );
+    const _hook = hook();
      
     const cupHole = difference(
         union(
@@ -20,8 +12,8 @@ function main() {
     )
 
     const holder = union(
-        hook,
-        translate([0,50,0],hook),
+        _hook,
+        translate([0,50,0],_hook),
 
         //back
         translate([-39.5,-30,-2],cube([79,85,2])),

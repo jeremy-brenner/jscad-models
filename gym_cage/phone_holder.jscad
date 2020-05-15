@@ -1,3 +1,5 @@
+include('hook.jscad');
+
 function getParameterDefinitions() {
     return [
         { name: 'renderHolder', type: 'checkbox', checked: true, caption: 'Render holder:' },
@@ -6,16 +8,8 @@ function getParameterDefinitions() {
 }
 
 function main({renderHolder,renderPlugCover}) {
-    const hook = intersection(
-        difference(
-            union(
-                cylinder({r:6, h:4}),
-                translate([0,0,4],cylinder({r:7.5, h:2}))
-            ),
-            cylinder({r:4,h:6})
-        ),
-        translate([-7.5,-7.5,0],cube({size:[15,7.5,8]}))
-    );
+    const _hook = hook();
+
     const screwHole = union([
         cylinder({d:2.9,h:10}),
         cylinder({d:3.5,h:4}),
@@ -59,8 +53,8 @@ function main({renderHolder,renderPlugCover}) {
     );
 
     const stand = union(
-        hook,
-        translate([0,50,0],hook),
+        _hook,
+        translate([0,50,0],_hook),
 
         //back
         translate([-39,-30,-2],cube([78,85,2])),
