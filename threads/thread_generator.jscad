@@ -1,4 +1,4 @@
-include('./thread.jscad');
+include('../lib/threads.jscad');
 
 function getParameterDefinitions() {
   return [
@@ -43,13 +43,13 @@ function nut({tr,nr,h,p=1,fn=32}) {
       cylinder({r:nr,h,fn:6}),
       cylinder({r:tr+0.5*p,h,fn})
     ),
-    thread({r:tr,h,fn,p,external:false})
+    threads({r:tr,h,fn,p,external:false})
   );
 }
 
 function bolt({tr,hr,hh,th,p=1,fn=32}) {
   return union(
-    thread({r:tr,h:th,fn,p}),
+    threads({r:tr,h:th,fn,p}),
     cylinder({r:tr,h:th,fn}),
     cylinder({r:hr,h:hh,fn:6})
   );
