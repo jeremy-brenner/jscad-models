@@ -1,51 +1,40 @@
-// include("../lib/thread_shape.jscad");
-// const otherThreadShape = getThreadShape(30);
-// // console.log(otherThreadShape)
-const threadShape = [
-    [0,0],
-    [0,1],
-    [0.45,0.55],
-    [0.45,0.45]
-];
-
-const tsl = threadShape.length;
-  
-const threadPolys = seq(tsl).flatMap( i => [
-  [ i, i+tsl, (i+1)%tsl+tsl ],
-  [ (i+1)%tsl+tsl, (i+1)%tsl, i ]
-]);
-
-const threadTriangles = seq(tsl).flatMap( i =>  polyToTri([ i, i+tsl, (i+1)%tsl+tsl, (i+1)%tsl ]) )
+include("../lib/thread_shape.jscad");
 
 function polyToTri(points) {
   return points.slice(1,-1).map( (v,i) => [points[0],v,points[i+2]] );
 }
 
+function getTriangles(threadShape,numSegments) {
+  const tsl = threadShape.length;
+  const pc = (numSegments+1) * tsl;
+  const threadPolys = seq(tsl).map( i => [ i, i+tsl, (i+1)%tsl+tsl, (i+1)%tsl ] );
+  const polys = [
+    seq(tsl),
+    ...seq(numSegments).flatMap( i => threadPolys.map(poly => poly.map(x => x+i*tsl))),
+    seq(tsl).map(i => pc-(i+1))
+  ]
+  
+  return polys.flatMap(p => polyToTri(p));
+}
+
 threads = function({r, h, fn=32, p=1, external=true}) {
 
+  const threadShape = getThreadShape(30);
   numSegments = (h+1)*fn;
+  const triangles = getTriangles(threadShape,numSegments);
   
-  const points = seq(numSegments+1).flatMap( i => getPoints(r,360/fn*i,i/fn-1,external,p) );
-  
-  const segmentTriangles = seq(numSegments)
-    .flatMap( i => threadTriangles.map(poly => poly.map(x => x+i*threadShape.length)));
-
-  const triangles = [ 
-    ...polyToTri(seq(tsl)), 
-    ...segmentTriangles, 
-    ...polyToTri( seq(tsl).map(i => points.length-(i+1)) )
-  ];
+  const points = seq(numSegments+1).flatMap( i => getPoints(r,360/fn*i,i/fn-1,external,p,threadShape) );
 
   const _thread = polyhedron({points,triangles});
 
   return intersection(
     _thread,
-    cylinder({r:r+0.5*p,h,fn})
+    cylinder({r:r*2,h,fn})
   );
 }
 
 
-function getPoints(r,a,z,external,p) {
+function getPoints(r,a,z,external,p,threadShape) {
   const rad = a * Math.PI/180;
   const cos = Math.cos(rad);
   const sin = Math.sin(rad);

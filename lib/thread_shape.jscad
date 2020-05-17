@@ -1,5 +1,5 @@
 
-getThreadShape = function(a) {
+getThreadShape = function(a,external=false) {
   const fh = 0.5*Math.tan((90-a)*Math.PI/180);
 
   const maxy = fh-fh/8;
@@ -11,12 +11,12 @@ getThreadShape = function(a) {
   return [ 
     [0,0],
     [0,1],
-    [miny,1],
+  //  [miny,1],
     [miny,1-minx],
     [maxy,1-maxx],
     [maxy,maxx],
     [miny,minx],
-    [miny,0] 
+  //  [miny,0] 
   ];   
 }
 
