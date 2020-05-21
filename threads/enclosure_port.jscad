@@ -1,4 +1,4 @@
-include('./lib/threads.jscad');
+include('../threads/threads.jscad');
 
 
 function getParameterDefinitions() {
@@ -13,7 +13,7 @@ function main({hr,hd}) {
     const looseness = 0.1;
     const fn = 64;
     const cr = hr + 6;
-    const tr = hr - 0.5*p;
+    const tr = hr - 0.25*p;
     const ctr = tr+looseness;
     const ch = 3;
     const th = 4;
@@ -25,22 +25,23 @@ function main({hr,hd}) {
     );
 
 
+    const maleThreads = threads({r:tr,h:th,p,fn});
     const male = difference(
         union(
             cap,
             translate([0,0,ch],cylinder({r:hr,h:uh,fn})),
-            translate([0,0,uh+ch],union(threads({r:tr,h:th,p,fn}),cylinder({r:tr,h:th,fn})))
+            translate([0,0,uh+ch],union(maleThreads,cylinder({r:maleThreads.properties.minR,h:th,fn})))
         ),
         cylinder({r:hr-2,h:hd+ch*2,fn})
     )
 
-
+    const femaleThreads = threads({r:ctr,h:ch,p, fn, external:false});
     const female = union(
         difference(
             cap,
-            cylinder({r:ctr+0.5*p, h:ch, fn})
+            cylinder({r:femaleThreads.properties.maxR, h:ch, fn})
         ),
-        threads({r:ctr,h:ch,p, fn, external:false})
+        femaleThreads
     );
 
     return union(

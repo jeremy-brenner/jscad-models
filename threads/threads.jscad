@@ -1,4 +1,4 @@
-include("thread_shape.jscad");
+include("../threads/thread_shape.jscad");
 
 function polyToTri(points) {
   return points.slice(1,-1).map( (v,i) => [points[0],v,points[i+2]] );
@@ -17,7 +17,7 @@ function getTriangles(threadShape,numSegments) {
   return polys.flatMap(p => polyToTri(p));
 }
 
-threads = function({r, h, a=45, fn=32, p=1, l=1, external=true}) {
+threads = function({r, h, a=90, fn=32, p=1, l=1, external=true}) {
 
   const threadShape = getThreadShape(a,external);
   
