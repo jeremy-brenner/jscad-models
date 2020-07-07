@@ -56,9 +56,9 @@ function main() {
             translate([0,0,4],postPost), 
             postBase 
         ),
-        translate([1.2,0,104],rotate([-90,0,90],scale([1,1,1.2],backing)))
-    ),
-    translate([1.2,0,78],key)
+        translate([1.1,0,104],rotate([-90,0,90],scale([0.9,1,1.1],backing)))
+    )//,
+   // translate([1.2,0,78],key)
     )
 
     return post;
