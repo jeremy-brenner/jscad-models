@@ -1,5 +1,9 @@
 include('wedge.jscad');
 
+function main() {
+  return scale([1,1,50],clip());
+}
+
 clip = function() {
     const barW = 16.5;
     const h = 1;

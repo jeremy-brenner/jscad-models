@@ -50,32 +50,44 @@ function main() {
         translate([0,54,20],dividedCubby)
         );
 
+    const bigCubby = translate([0,27,77],rotate([180,0,0],difference(
+        cube({size:[170,81,97], center:[true,true,false]}),
+        translate([0,-5.5,0],cube({size:[168,68,96], center:[true,true,false]})),
+        translate([0,34.5,0],cube({size:[168,10,96], center:[true,true,false]})),
+        translate([0,0,30],mirror([0,0,1],wedge({size:[170,81,30], center:[true,true,false]})))
+    )));
+
     const side_piece_h = 97;
+    //const side_piece_w = 35;
+    const side_piece_w = 23;
+    const side_piece_l = 54;
+
     const side_pieces = translate([0,0,side_piece_h],rotate([180,0,0],difference(
         union(
             difference(
                 union(
-                    translate([0,0,0],scale([0.65,1,1],cylinder({r:27*2, h:side_piece_h}))),
-                    translate([0,-27*2,0],cube({size:[27*2*0.65,27*2,side_piece_h]}))
+                    translate([0,0,0],scale([1,side_piece_l/side_piece_w,1],cylinder({r:side_piece_w, h:side_piece_h}))),
+                    translate([0,-27*2,0],cube({size:[side_piece_w,side_piece_l,side_piece_h]}))
                 ),
                  union(
-                   translate([0,0,0],scale([0.65,1,1],cylinder({r:27*2-1, h:side_piece_h-1}))),
-                   translate([0,-27*2+1,0],cube({size:[27*2*0.65-1,27*2,side_piece_h-1]}))
+                   translate([0,0,0],scale([1,side_piece_l/side_piece_w,1],cylinder({r:side_piece_w-1, h:side_piece_h-1}))),
+                   translate([0,-27*2+1,0],cube({size:[side_piece_w-1,side_piece_l-1,side_piece_h-1]}))
                  )
             ),
             cube({size:[2,27*4,side_piece_h], center:[true,true,false]})
         ),
        translate([0,0,40],mirror([0,0,1],wedge({size:[27*4,27*4,40], center:[true,true,false]})))
     )));
-    
+
+
      const right_side_piece = intersection(
          side_pieces,
          cube({size:[27*2,27*4,side_piece_h], center:[false,true,false]})
      );
+ 
 
      const left_side_piece = mirror([1,0,0], right_side_piece);
 
-    // return left_side_piece;
 
 const pegRack = center([true,true,false],union(
     cube({size:[sectionW*5,27,6]}),
@@ -88,8 +100,9 @@ const pegRack = center([true,true,false],union(
 ))
 
 
-    return union(
-        all_cubbies,
+    const organizer = union(
+        bigCubby,
+        //all_cubbies,
         translate([-170/2+1,27/2,-20],left_side_piece),
         translate([0,-26,-20],center([true,true,false],all_tool_holders)),
         translate([0,-50,-20],pegRack),
@@ -97,7 +110,7 @@ const pegRack = center([true,true,false],union(
         translate([0,67.5,76],cube({size:[170,1,1],center:[true,false,false]}))
     );
   
-
+    return mirror([1,0,0],organizer);
   
 
 }
