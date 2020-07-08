@@ -6,17 +6,12 @@ function main() {
 
     const pr = 3.5;
     const gr = 1;
+    
+    const ph = 95;
 
-    const backing = signBacking();
-    const key = difference(
-        union(
-            cylinder({r:1.4,h:5}),
-            translate([0,0,5],sphere({r:1.4}))
-        ),
-        cube({size:[3,3,7],center:[false,true,false]})
-    );
+    const backing = signBacking(0.2);
 
-    const postPost = groovedPost({pr,ph:80,gr,gh:79,gc:6})
+    const postPost = groovedPost({pr,ph,gr,gh:ph-1,gc:6})
 
     const angle = 360/6;
     const bump = translate([pr+2,0,0],rotate([90,0,0],torus({ro: 2, ri:gr})));
@@ -49,17 +44,14 @@ function main() {
     );
 
 
-    const post = union(
-        difference(
+    const post = difference(
         union(
-            translate([0,0,84],postTip),
+            translate([0,0,ph+4],postTip),
             translate([0,0,4],postPost), 
             postBase 
         ),
-        translate([1.1,0,104],rotate([-90,0,90],scale([0.9,1,1.1],backing)))
-    )//,
-   // translate([1.2,0,78],key)
-    )
+        translate([0,0,ph+24],rotate([-90,0,90],center([false,false,true],backing)))
+    );
 
     return post;
 }
