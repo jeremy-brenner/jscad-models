@@ -23,9 +23,9 @@ function main() {
     )
 
     const ledClip = difference(
-        cube({size:[length,12.125,1], center:[true,true,false]}),
-        cube({size:[length,10.125,0.5], center:[true,true,false]}),
-        cube({size:[length,9.125,1], center:[true,true,false]})
+        cube({size:[length,12.125,1.2], center:[true,true,false]}),
+        cube({size:[length,10.125,0.7], center:[true,true,false]}),
+        cube({size:[length,9.125,1.2], center:[true,true,false]})
 
     )
 
