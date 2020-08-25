@@ -1,9 +1,14 @@
 include('../lib/seq.jscad');
 
-function main() {
-    const lineW = 0.5;
-    const lineH = 0.5;
-    const circleR = 30;
+function getParameterDefinitions() {
+    return [
+        { name: 'lineW', type: 'float', initial: 0.5, caption: "Line width:" },
+        { name: 'lineH', type: 'float', initial: 0.5, caption: "Line height:" },
+        { name: 'circleR', type:'int', initial: 20, caption: "Circle radius:" }
+    ];
+}
+
+function main({lineW,lineH,circleR}) {
     const fn = 32;
 
     const _circle = difference(
@@ -24,6 +29,7 @@ function main() {
 
     const _30deg = Math.sqrt(3)/2;
     const _60deg = 1/2;
+    const wonkyLineLengthHack = 5.28;  // just go with it
 
     const innerHexLine = translate([0,circleR*2*_30deg,0],cube({size:[circleR*2,lineW,lineH],center:[true,true,false]}))
     const outerHexLine = translate([0,circleR*4*_30deg,0],cube({size:[circleR*4,lineW,lineH],center:[true,true,false]}))
@@ -37,7 +43,7 @@ function main() {
     const innerStar = seq(6).map(i => rotate([0,0,i*60],innerStarLine))
     const outerStar = seq(6).map(i => rotate([0,0,i*60],outerStarLine))
 
-    const wonkyLine = translate([-circleR*4,-lineW/2,0],rotate([0,0,19],cube({size:[circleR*5.29,lineW,lineH]})));
+    const wonkyLine = translate([-circleR*4,-lineW/2,0],rotate([0,0,19],cube({size:[circleR*wonkyLineLengthHack,lineW,lineH]})));
     const wonkyLines = seq(6).map(i => rotate([0,0,i*60],union( wonkyLine, mirror([1,0,0],wonkyLine))))
 
     return union(
