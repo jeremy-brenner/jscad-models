@@ -2,7 +2,6 @@ seq = function(length) {
     return Array.apply(null, {length}).map(Function.call, Number);
 }
   
-
 function getParameterDefinitions() {
     return [
         { name: 'lineW', type: 'float', initial: 0.5, caption: "Line width:" },
@@ -19,9 +18,12 @@ function main({lineW,lineH,circleR}) {
       cylinder({r:circleR-lineW/2, h:lineH, fn})
     );
 
+    const lineJoint = cylinder({r:lineW/2, h:lineH, fn});
+
     const innerCircles = seq(6).map(i => rotate([0,0,60*i],translate([circleR*2,0,0],_circle)))
     const outerCircles = seq(6).map(i => rotate([0,0,60*i],translate([circleR*4,0,0],_circle)))
-
+    const lineJoints = seq(6).map(i => rotate([0,0,60*i],translate([circleR*4,0,0],lineJoint)))
+    
     const radialLine = cube({size:[circleR*8,lineW,lineH],center:[true,true,false]})
 
     const radialLines = union(
@@ -53,6 +55,7 @@ function main({lineW,lineH,circleR}) {
         _circle,
         ...innerCircles,
         ...outerCircles,
+        ...lineJoints,
         ...innerStar,
         ...outerStar,
         ...innerHex,
