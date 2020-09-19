@@ -57,19 +57,21 @@ function main({renderHolder,renderPlugCover}) {
         translate([0,50,0],_hook),
 
         //back
-        translate([-39,-30,-2],cube([78,85,2])),
+        translate([-38,-30,-2],cube([78,85,2])),
 
         //bottom
-        translate([-39,-48.5,-16],cube([78,18.5,16])),
-        translate([-39,-30,-16],cube([78,5,2])),
+        translate([-38,-48.5,-16],cube([78,18.5,16])),
+        translate([-38,-30,-16],cube([78,5,2])),
 
         //right
-        translate([-41,-48.5,-16],cube([2,103.5,16])),
-        translate([-39,-30,-16],cube([5,85,2])),
+        //translate([-41,-48.5,-16],cube([2,103.5,16])),
+        translate([-38,-48.5,-16],cube([2,103.5,16])),
+        translate([-38,-30,-16],cube([5,85,2])),
 
         //left
-        translate([39,-48.5,-16],cube([2,103.5,16])),
-        translate([34,-30,-16],cube([5,85,2]))
+        //translate([39,-48.5,-16],cube([2,103.5,16])),
+        translate([38,-48.5,-16],cube([2,103.5,16])),
+       translate([35,-30,-16],cube([5,85,2]))
     );
 
     const allModels = [];

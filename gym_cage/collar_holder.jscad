@@ -1,6 +1,14 @@
 include('../threads/threads.jscad');
 
-function main() {
+function getParameterDefinitions() {
+    return [
+        { name: 'renderNut', type: 'checkbox', checked: true, caption: 'Render nut:' },
+        { name: 'renderBackpiece', type: 'checkbox', checked: true, caption: 'Render backpiece:' },
+        { name: 'renderPost', type: 'checkbox', checked: true, caption: 'Render post:' }
+    ];
+}
+
+function main({renderNut,renderBackpiece,renderPost}) {
     const threadR = 2.4;
     const backPieceThreads = threads({r:threadR,h:17,fn:32,p:1});
     const backPiece = union(
@@ -35,9 +43,16 @@ function main() {
     );
 
     const models = [];
-    models.push(translate([0,-30,0],nut));
-    models.push(backPiece);
-    models.push(translate([0,20,0],post));
+    if(renderNut) {
+        models.push(translate([0,-30,0],nut));
+    }
+    
+    if(renderBackpiece) {
+        models.push(backPiece);
+    }
 
+    if(renderPost) {
+        models.push(translate([0,20,0],post));
+    }
     return union(models);
 }
