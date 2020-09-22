@@ -42,7 +42,6 @@ rotatorInside = function() {
         cube({size:[1.5,38,11], center:[true,true,false]}),
         translate([0,38/2-2,2],cube({size:[1.5,4,6], center:[true,true,false]})),
         translate([0,-38/2+2,2],cube({size:[1.5,4,6], center:[true,true,false]}))
-
     )
 
     const bars = [
