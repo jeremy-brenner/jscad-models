@@ -30,7 +30,7 @@ function main({renderNut,renderBackpiece,renderPost}) {
         translate([0,0,5],cylinder({r:6,h:17}))
     );
     
-    const nutThreads = threads({r:threadR+0.2,h:15,fn:32,p:1,external:false});
+    const nutThreads = threads({r:threadR+0.1,h:15,fn:32,p:1,external:false});
     const nut = union(
             difference(
                 union(
