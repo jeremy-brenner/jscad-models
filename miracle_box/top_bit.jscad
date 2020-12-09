@@ -10,7 +10,7 @@ function main() {
     
     const corner = translate([-mainR+cornerR+0.2,-cornerR,0],difference(
         translate([-cornerR*3,0,0],cube({size:[cornerR*3,cornerR*3,h]})),
-        cylinder({r:cornerR,h,fn:64})
+        cylinder({r:cornerR,h,fn:128})
     ));
 
     
@@ -20,18 +20,18 @@ function main() {
     const outerCut = 
     union(
         difference(
-            cylinder({r:maxR,h,fn:64}),
-            cylinder({r:mainR,h,fn:64}),
+            cylinder({r:maxR,h,fn:256}),
+            cylinder({r:mainR,h,fn:256}),
             slicer,
             rotate([0,0,180+(cstart)/2], slicer)
         ),
-        rotate([0,0,(cstart)/2],translate([-maxR-1,0,0],cylinder({r:4,h,fn:64})))
+        rotate([0,0,(cstart)/2],translate([-maxR-1,0,0],cylinder({r:4,h,fn:128})))
     );
     
    // return outerCut;
     const half = difference(
-        cylinder({r:maxR,h,fn:64}),
-        cylinder({r:centerR,h,fn:64}),
+        cylinder({r:maxR,h,fn:256}),
+        cylinder({r:centerR,h,fn:256}),
         outerCut,
         slicer,
         rotate([0,0,180+sliceDeg/2], slicer),
